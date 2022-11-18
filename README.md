@@ -25,12 +25,7 @@ Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 
 ## References
 
-@inproceedings{Fernandes2017TransferLW,
-  title={Transfer Learning with Partial Observability Applied to Cervical Cancer Screening},
-  author={Kelwin Fernandes and Jaime S. Cardoso and Jessica C. Fernandes},
-  booktitle={Iberian Conference on Pattern Recognition and Image Analysis},
-  year={2017}
-}
+1. Fernandes, K., Cardoso, J.S., Fernandes, J. (2017). Transfer Learning with Partial Observability Applied to Cervical Cancer Screening. In: Alexandre, L., Salvador Sánchez, J., Rodrigues, J. (eds) Pattern Recognition and Image Analysis. IbPRIA 2017. Lecture Notes in Computer Science(), vol 10255. Springer, Cham. https://doi.org/10.1007/978-3-319-58838-4_27
 
 
 
