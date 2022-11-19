@@ -1,4 +1,6 @@
 """
+code adapted from Lecture 2 - "DSCI 522 Data Science Workflows"
+source file: "https://github.ubc.ca/MDS-2022-23/DSCI_522_dsci-workflows_students/blob/master/src/download_data.py"
 
 Downloads csv data from the given input website to a local filepath as a csv.
 
@@ -6,7 +8,7 @@ Usage: download_data_script.py --url=<url> --output_file=<output_file>
  
 Options:
 
---url=<url>             The URL from where the data needs to be downloaded (csv format)
+--url=<url>                   The URL from where the data needs to be downloaded (csv format)
 --output_file=<output_file>   path in your local system where the the csv to be saved and desired name of the csv file
 
 Example script to run in terminal: 
