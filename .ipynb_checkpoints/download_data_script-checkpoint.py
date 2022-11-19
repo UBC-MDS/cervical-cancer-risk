@@ -2,7 +2,7 @@
 
 Downloads csv data from the given input website to a local filepath as a csv.
 
-Usage: download_data_script.py --url=<url> --output_file=<output_file> 
+Usage: download_data.py --url=<url> --output_file=<output_file> 
  
 Options:
 
@@ -11,7 +11,7 @@ Options:
 
 Example script to run in terminal: 
 
-python download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="rfcc.csv"
+python download_data.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="rfcc.csv"
 
 """
 
