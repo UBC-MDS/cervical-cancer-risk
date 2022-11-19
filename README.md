@@ -1,10 +1,12 @@
 # Cervical Cancer Prediction and Risk Stratification
 
+
 -   Authors: Samson Bakos, Morris Chan, Waiel Tinwala, Revathy Ponnambalam
 
 A Data Analysis/ Machine Learning project developed for DSCI 522 in the UBC Master of Data Science Program
 
 ## Introduction
+
 
 Our primary research question is: can we diagnose or stratify risk for cervical cancer based on lifestyle factors, sexual history, and comorbidities using a machine learning model? This question is naturally subdivided into risk level and diagnosis questions depending on the relative strengths of the models that prove effective for this data. Classifiers with hard predictions (i.e. k-NN) will be effective for diagnosis, while classifiers with probabilistic predictions (i.e. logistic regression) will be effective for predicting level of risk depending on computed prediction probabilities.
 
@@ -37,3 +39,4 @@ Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 ## References
 
 1.  Fernandes, K., Cardoso, J.S., Fernandes, J. (2017). Transfer Learning with Partial Observability Applied to Cervical Cancer Screening. In: Alexandre, L., Salvador Sánchez, J., Rodrigues, J. (eds) Pattern Recognition and Image Analysis. IbPRIA 2017. Lecture Notes in Computer Science(), vol 10255. Springer, Cham. <https://doi.org/10.1007/978-3-319-58838-4_27>
+
