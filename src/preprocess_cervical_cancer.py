@@ -2,7 +2,6 @@
 # date: 2022-11-21
 """
 code adapted from Lecture 3 - "DSCI 522 Data Science Workflows"
-source file: "https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv"
 
 
 "Cleans, splits and pre-processes the Cervical Cancer data (from https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv).
