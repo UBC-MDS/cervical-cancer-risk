@@ -155,11 +155,12 @@ def main(data, out_file):
     except:
         os.makedirs(os.path.dirname(f'{out_file}/'))
         smoke_corr_df.to_csv(f'{out_file}/smoke_corr.csv', index=True)
-        std_corr_df.to_csv(f'{out_file}/std_corr.csv', index=True)  
+    
+    std_corr_df.to_csv(f'{out_file}/std_corr.csv', index=True)  
 
-        # save charts as .png files
-        save(num_chart, f'{out_file}/numeric_feat.png', scale_factor=4.0)
-        save(cat_chart, f'{out_file}/binary_feat.png', scale_factor=4.0)
+    # save charts as .png files
+    save(num_chart, f'{out_file}/numeric_feat.png', scale_factor=4.0)
+    save(cat_chart, f'{out_file}/binary_feat.png', scale_factor=4.0)
 
 
 if __name__ == "__main__":
