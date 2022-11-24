@@ -25,7 +25,6 @@ from docopt import docopt
 import os
 import numpy as np
 import pandas as pd
-import altair as alt
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
@@ -67,6 +66,7 @@ def main(input_file, out_dir):
     # write training and test data to csv files
     try:
         train_df.to_csv(f'{out_dir}/train.csv', index=False)
+        test_df.to_csv(f'{out_dir}/test.csv', index=False)
     except:
         os.makedirs(os.path.dirname('../data/processed/'))
         train_df.to_csv(f'{out_dir}/train.csv', index=False)
