@@ -22,6 +22,7 @@ Options:
 
 # import required libraries
 from docopt import docopt
+import os
 import numpy as np
 import pandas as pd
 import altair as alt
@@ -64,8 +65,12 @@ def main(input_file, out_dir):
     train_df, test_df = train_test_split(cervical_clean, test_size=0.2, random_state=123)
 
     # write training and test data to csv files
-    train_df.to_csv(f'{out_dir}/train.csv', index=False)
-    test_df.to_csv(f'{out_dir}/test.csv', index=False)
+    try:
+        train_df.to_csv(f'{out_dir}/train.csv', index=False)
+    except:
+        os.makedirs(os.path.dirname('../data/processed/'))
+        train_df.to_csv(f'{out_dir}/train.csv', index=False)
+        test_df.to_csv(f'{out_dir}/test.csv', index=False)
 
 if __name__ == "__main__":
     main(dc["--input_file"], dc["--out_dir"])
