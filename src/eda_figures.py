@@ -136,7 +136,24 @@ def main(data, out_file):
     # create EDA figure for numeric data
     num_chart = hist(train_data, feat_list=numeric_features, repeat=True)
 
-    # save charts to designated folders
+    # create column list for correlation between 'Smoke' columns
+    smoke = ['Smokes', 'Smokes (years)', 'Smokes (packs/year)']
+
+    # create column list for correlation between STDs
+    stds = ['STDs:condylomatosis', 'STDs:vaginal condylomatosis',
+        'STDs:vulvo-perineal condylomatosis', 'STDs:syphilis', 'STDs:pelvic inflammatory disease',
+        'STDs:genital herpes', 'STDs:molluscum contagiosum', 'STDs:HIV',
+        'STDs:Hepatitis B', 'STDs:HPV']
+    
+    # create correlation dataframes
+    smoke_corr_df = train_data.loc[:, smoke].corr('spearman')
+    std_corr_df = train_data.loc[:, stds].corr('spearman')
+
+    # save correlation data frames as .csv files
+    smoke_corr_df.to_csv(f'{out_file}/smoke_corr.csv', index=True)
+    std_corr_df.to_csv(f'{out_file}/std_corr.csv', index=True)
+
+    # save charts as .png files
     save(num_chart, f'{out_file}/numeric_feat.png', scale_factor=4.0)
     save(cat_chart, f'{out_file}/binary_feat.png', scale_factor=4.0)
 
