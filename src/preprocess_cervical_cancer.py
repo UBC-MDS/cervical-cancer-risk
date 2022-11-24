@@ -2,7 +2,6 @@
 # date: 2022-11-21
 """
 code adapted from Lecture 3 - "DSCI 522 Data Science Workflows"
-source file: "https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv"
 
 
 "Cleans, splits and pre-processes the Cervical Cancer data (from https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv).
@@ -12,7 +11,7 @@ Usage: src/preprocess_cervical_cancer.py --input_file=<input_file> --out_dir=<ou
 
 Example script to run in terminal: 
 
-python preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"
+python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"
 
   
 Options:
@@ -32,9 +31,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-
+#initialize docopt
 dc = docopt(__doc__)
 
+
+#function to read and clean the data 
 def main(input_file, out_dir):
 
     # read data and convert 
