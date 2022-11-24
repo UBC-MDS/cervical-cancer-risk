@@ -30,8 +30,12 @@ dc = docopt(__doc__)
 def main(url, output_file):
     
     data = pd.read_csv(url, header=None)
-    data.to_csv(f'../data/raw/{output_file}', index=False)
 
+    try:
+        data.to_csv(f'../data/raw/{output_file}', index=False)
+    except:
+        os.makedirs(os.path.dirname(f'../data/raw/'))
+        data.to_csv(f'../data/raw/{output_file}', index=False)
 
 if __name__ == "__main__":
     main(dc["--url"], dc["--output_file"])
