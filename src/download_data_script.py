@@ -30,7 +30,7 @@ dc = docopt(__doc__)
 def main(url, output_file):
     
     data = pd.read_csv(url, header=None)
-    data.to_csv(f'data/raw/{output_file}', index=False)
+    data.to_csv(f'../data/raw/{output_file}', index=False)
 
 
 if __name__ == "__main__":

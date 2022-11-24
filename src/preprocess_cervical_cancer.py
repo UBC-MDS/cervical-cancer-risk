@@ -12,7 +12,7 @@ Usage: src/preprocess_cervical_cancer.py --input_file=<input_file> --out_dir=<ou
 
 Example script to run in terminal: 
 
-python preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"
+python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"
 
   
 Options:
@@ -32,9 +32,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-
+#initialize docopt
 dc = docopt(__doc__)
 
+
+#function to read and clean the data 
 def main(input_file, out_dir):
 
     # read data and convert 
