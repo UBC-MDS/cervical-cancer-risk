@@ -20,6 +20,8 @@ Proposed models to be tested include Decision Trees, kNN, SVC, Naive Bayes, and 
 
 ## Usage
 
+LINK TO ENV FILE: https://github.com/UBC-MDS/cervical-cancer-group7/blob/main/environment.yaml
+
 To run the exploratory data analysis, follow these steps:
 
 -   Download `download_data_script.py` and `src/cervical_cancer_data_eda.ipynb` to a folder on your device.
