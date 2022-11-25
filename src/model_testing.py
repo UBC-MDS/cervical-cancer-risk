@@ -121,7 +121,7 @@ def main( data_path, output_path):
 
     # SVC ---
 
-    pipe_svc_opt = load( 'pipe_knn_opt.joblib')
+    pipe_svc_opt = load( 'pipe_svc_opt.joblib')
 
     y_hat_svc_opt = pipe_svc_opt.predict( X)
     test_results[ 'SVC_opt'] = better_metrics( y, y_hat_svc_opt)
@@ -147,12 +147,12 @@ def main( data_path, output_path):
     print( 'Random Forest Classifier: Done.')
 
     # Naive Bayes ---
-    pipe_nb_opt = load( 'pipe_nb_opt.joblib')
+    pipe_nb = load( 'pipe_nb.joblib')
 
-    y_hat_nb_opt = pipe_nb_opt.predict( X)
-    test_results[ 'NB_opt'] = better_metrics( y, y_hat_nb_opt)
+    y_hat_nb = pipe_nb.predict( X)
+    test_results[ 'NB_opt'] = better_metrics( y, y_hat_nb)
 
-    precision_nb, recall_nb, thresholds_nb = precision_recall_curve( y, pipe_nb_opt.predict_proba( X)[ :, 1])
+    precision_nb, recall_nb, thresholds_nb = precision_recall_curve( y, pipe_nb.predict_proba( X)[ :, 1])
 
     pr_curve_nb = pr_curve( precision_nb, recall_nb)
     save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')

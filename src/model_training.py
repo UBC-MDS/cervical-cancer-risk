@@ -150,7 +150,9 @@ def main( data_path, output_path):
     cv_result_knn_opt = cross_validate( pipe_knn_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
     cv_result_dict[ 'KNN_opt'] = pd.DataFrame( cv_result_knn_opt).agg( [ 'mean', 'std']).T
 
+    pipe_knn_opt.fit( X, y)
     dump( pipe_knn_opt, 'pipe_knn_opt.joblib')
+    print( 'KNN: Done')
 
     # SVC ---
 
@@ -177,8 +179,8 @@ def main( data_path, output_path):
     cv_result_svc_opt = cross_validate( pipe_svc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
     cv_result_dict[ 'SVC_opt'] = pd.DataFrame( cv_result_svc_opt).agg( [ 'mean', 'std']).T
 
+    pipe_svc_opt.fit( X, y)
     dump( pipe_svc_opt, 'pipe_svc_opt.joblib')
-
     print( 'Support Vector Classifier: Done')
 
     # RFC ---
@@ -214,8 +216,8 @@ def main( data_path, output_path):
     cv_result_rfc_opt = cross_validate( pipe_rfc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
     cv_result_dict[ 'RFC_opt'] = pd.DataFrame( cv_result_rfc_opt).agg( [ 'mean', 'std']).T
 
+    pipe_rfc_opt.fit( X, y)
     dump( pipe_rfc_opt, 'pipe_rfc_opt.joblib')
-
     print( 'Random Forest Classifier: Done')
 
     # Naive Bayes ---
@@ -226,8 +228,8 @@ def main( data_path, output_path):
 
     pipe_nb.fit( X, y) # As no hyperparameter optimization for Gaussian naive Bayes
 
+    pipe_nb.fit( X, y)
     dump( pipe_nb, 'pipe_nb.joblib')
-
     print( 'Gaussian Naive Bayes Classifier: Done')
 
     # Logistic Regression ---
@@ -259,8 +261,8 @@ def main( data_path, output_path):
     cv_result_logreg_opt = cross_validate( pipe_logreg_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
     cv_result_dict[ 'LogReg_opt'] = pd.DataFrame( cv_result_logreg_opt).agg( [ 'mean', 'std']).T
 
+    pipe_logreg_opt.fit( X, y)
     dump( pipe_logreg_opt, 'pipe_logreg_opt.joblib')
-
     print( 'Logistic Regression Classifier: Done')
 
     # Cross-validation results of all models
