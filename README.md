@@ -25,7 +25,9 @@ Further exploration may be meritted to investigate other models that may more ac
 
 LINK TO ENV FILE: https://github.com/UBC-MDS/cervical-cancer-group7/blob/main/environment.yaml
 
-LINK TO PIPELINE FLOWCHART:
+PIPELINE FLOWCHART:
+
+![](src/AnalysisPipeline.png)
 
 Please refer to the above flowchart for an overview of the analysis pipeline
 
