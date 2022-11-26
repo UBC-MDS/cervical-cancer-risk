@@ -16,3 +16,4 @@ dependencies:
   - pip:
     - joblib==1.1.0
     - selenium==4.2.0
+    - vl-convert-python
