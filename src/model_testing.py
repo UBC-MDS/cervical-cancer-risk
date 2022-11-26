@@ -8,7 +8,7 @@ Options:
 --output_path=<output_path> Desired path for the perfornace results returned.
 
 Example:
-python model_testing.py --data_path='../data/processed/train.csv' --output_path='../results'
+python model_testing.py --data_path='../data/processed/test.csv' --output_path='../results'
 '''
 
 from docopt import docopt
