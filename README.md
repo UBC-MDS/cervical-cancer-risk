@@ -17,7 +17,7 @@ Data was first split into training and test sets. Initial EDA on training data i
 
 The modelling process involved training and testing the dataset on a variety of models to investigate what algorithms might be suitable for this problem. Models tested include Decision Trees, kNN, SVC, Naive Bayes, Logistic Regression, and Random Forests. Models were assessed primarily on the criteria of maximum recall to minimize Type II Error, with a working threshold of 0.28 precision (twice the population positive rate), set quite low due to the dangers of false negatives in the diagnosis/ risk identification context. Models were run in their default form before undergoing hyperparameter tuning, and finally evaluation on the test set. 
 
-Final results are presented in the form of PR Curves, and test scores for precision, recall, f1 and AUC. Unfortunately, no model seems sufficient to provide a deployment worthy level of performance, with the closest contender being SVC. 
+Final results are presented in the form of PR Curves, and test scores for precision, recall, f1 and AUC. Unfortunately, no model seems sufficient to provide a deployment worthy level of performance as a diagnostic tool, but there is some possible application as a flagging system for further testing, but this would in no way replace normal diagnostic checks.
 
 Further exploration may be meritted to investigate other models that may more accurately capture the data/target relationship, feature engineering and transformation, and testing of model decision thresholds based on the PR curves. 
 
@@ -31,14 +31,16 @@ https://raw.githubusercontent.com/UBC-MDS/cervical-cancer-group7/main/src/Analys
 
 Please refer to the above flowchart for an overview of the analysis pipeline
 
-To run the data analysis on your local device, follow these steps:
+To run the data analysis on your local device, follow these steps. These scripts can be run in their current quoted form and will automatically generate the files on your device without manipulating the arguments.
 
-1. Clone this repository to your local device 
-2. Run the following script to download the data: `python download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="risk_factors_cervical_cancer.csv"` (input: the data url)
-3. Run the following script to clean and split the data: `python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"` (input: the downloaded data)
-3. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run `python eda_figures.py --train_data='../data/processed/train.csv' --out_file='../results'` to generate the outputs (input: training set)
-4. Run the following script to train the models: `python model_training.py --data_path='../data/processed/train.csv' --output_path_cv='../results'` (input: training set)
-5. Run the following script to test the models and generate results: `python model_training.py --data_path='../data/processed/test.csv' --output_path_cv='../results'` (input: test set)
+1. Clone this repository to your local device and navigate to the SRC subdirectory 
+2. Run the following script to download the data: `python download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="risk_factors_cervical_cancer.csv"` (input: the data url, output: raw dataset)
+3. Run the following script to clean and split the data: `python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"` (input: the raw data, output: cleaned and split data)
+3. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run `python eda_figures.py --train_data='../data/processed/train.csv' --out_file='../results'` to generate the outputs (input: training set, output: literate EDA notebook, and/or EDA figures)
+4. Run the following script to train the models: `python model_training.py --data_path='../data/processed/train.csv' --output_path_cv='../results'` (input: training set, output: model objects saved as .joblib files)
+5. Run the following script to test the models and generate results: `python model_training.py --data_path='../data/processed/test.csv' --output_path_cv='../results'` (input: test set and traind models, output: final figures and tables).
+
+Final results can be found in the results subdirectory, and the final written report in the Analysis_Docs subdirectory. The final report does not require a script, but if rendering the .Rmd, the product of the above scripts must be present with the correct (default) file names/paths on your device. 
 
 ## License
 

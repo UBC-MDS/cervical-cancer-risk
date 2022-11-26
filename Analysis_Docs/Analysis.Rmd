@@ -48,7 +48,7 @@ Packaging of this analysis was done using docopt scripts (@doc).
 
 ## Results
 
-Results of this analysis are unfortunately disappointing, as no model seems to provide sufficient performance to merit deployment as a diagnosis tool. Our hope for a strong model was a recall of 0.8 at a precision of 0.28. This is a high recall goal, but given the dangers of Type II error (failing to flag at risk individuals), recall is essential, and is the reason for our deliberately lower precision.
+Results of this analysis are unfortunately disappointing, as no model seems to provide sufficient performance to merit deployment as a diagnosis tool, though there is some limited application as a non-independent risk flagging system discussed below. Our hope for a strong model was a recall of 0.8 at a precision of 0.28. This is a high recall goal, but given the dangers of Type II error (failing to flag at risk individuals), recall is essential, and is the reason for our deliberately lower precision.
 
 PR Curves and final results against the test set are shown below:
 
@@ -60,16 +60,21 @@ knitr::include_graphics("../results/pr_curve_nb.png")
 knitr::include_graphics("../results/pr_curve_rfc.png")
 knitr::include_graphics("../results/pr_curve_svc.png")
 ```
----
+We can see from these plots that even the best performing models (i.e. Naive Bayes), capture less than 60% of true labels (women with a cervical cancer diagnosis) at only 28% precision. Missing 40% of cancer cases is not an acceptable margin of error in this context, especially considering the low precision threshold, where just under three in four women flagged by our model would be false positives. 
+
+Also concerning is the highly jagged nature of these plots, indicating that small changes in the threshold value can cause massive shifts in scoring. While jaggedness in PR curves is expected, these plots are excessively erratic. This is likely caused by the small number of true data points in the test set (where capture or non capture of a few points can dramatic change the scores). A lack of separation in the predicted probabilities of each class may also be a factor, where many true and false examples are grouped at similar prediction probabilities, indicating that these classes may be poorly separable (i.e. cannot be separated by a single hyperplane for logistic regression), or that their separation is poorly described by our features.
+
 ```{r echo = FALSE, message = FALSE}
 df <- read_csv("../results/test-results.csv")
 knitr::kable(df, caption = "Table 1. Test set scores (Precision, Recall, f1, AUC) for optimized models")
 ```
-These plots and test results show that these models are not sufficient to produce accurate diagnoses on their own. This may be due to the limited sample size, particularly of positive examples, or simply that the features provided do not sufficiently account for the variance of the target and a conclusive diagnosis cannot be made based on adjacent-factor risk data -- this is almost certainly true. 
+The table above shows numerical results for evaluation at the 0.5 `predict_proba` threshold. Further investigation would lead us to investigating these values at different operating thresholds (such as our 0.28 chosen operating threshold), but based on the curves above, threshold manipulation is not enough to produce independently viable models.
+
+These plots and test results show that these models are not sufficient to produce accurate diagnoses on their own. This may be due to the limited sample size, particularly of positive examples, or simply that the features provided do not sufficiently account for the variance of the target and a conclusive diagnosis cannot be made based on adjacent-factor risk data. This second point is almost certainly true, as the mechanism of cancer development is not simple cause-and-effect but is inherently stochastic, limiting the effectiveness of any model applied. 
 
 ## Conclusion and Next Steps
 
-While the results are disappointing, these models may still have some application in a flagging system. While this does not replace normal diagnostic checks, we can logically infer that individuals flagged by these models are at least more likely to have Cervical Cancer, and a positive flag can provide motivation for further testing, especially if these models were used in parallel and a single individual recieved multiple flags. 
+While the results are disappointing, these models may still have some application in a flagging system. While this does not replace normal diagnostic checks, we can logically infer that individuals flagged by these models are at least more likely to have cervical cancer, and a positive flag can provide motivation for further testing, especially if these models were used in parallel and a single individual received multiple flags. 
 
 Further exploration may be meritted to investigate other models that may more accurately capture the data/target relationship, feature engineering and transformation, and testing of model decision thresholds based on the PR curves. 
 
