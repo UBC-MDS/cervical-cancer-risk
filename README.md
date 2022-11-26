@@ -27,7 +27,7 @@ LINK TO ENV FILE: https://github.com/UBC-MDS/cervical-cancer-group7/blob/main/en
 
 PIPELINE FLOWCHART:
 
-![](src/AnalysisPipeline.png)
+https://raw.githubusercontent.com/UBC-MDS/cervical-cancer-group7/main/src/AnalysisPipeline.png
 
 Please refer to the above flowchart for an overview of the analysis pipeline
 
@@ -49,4 +49,7 @@ Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 ## References
 
 1.  Fernandes, K., Cardoso, J.S., Fernandes, J. (2017). Transfer Learning with Partial Observability Applied to Cervical Cancer Screening. In: Alexandre, L., Salvador Sánchez, J., Rodrigues, J. (eds) Pattern Recognition and Image Analysis. IbPRIA 2017. Lecture Notes in Computer Science(), vol 10255. Springer, Cham. <https://doi.org/10.1007/978-3-319-58838-4_27>
+2. Bosch, F. X., et al. "Risk factors for cervical cancer in Colombia and Spain." International journal of cancer 52.5 (1992): 750-758.
+3. Castellsagué, Xavier. "Natural history and epidemiology of HPV infection and cervical cancer." Gynecologic oncology 110.3 (2008): S4-S7.
+4. Petignat, Patrick, and Michel Roy. "Diagnosis and management of cervical cancer." Bmj 335.7623 (2007): 765-768.
 
