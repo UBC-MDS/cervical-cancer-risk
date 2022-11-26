@@ -7,30 +7,38 @@ A Data Analysis/ Machine Learning project developed for DSCI 522 in the UBC Mast
 
 ## Introduction
 
-
-Our primary research question is: can we diagnose or stratify risk for cervical cancer based on lifestyle factors, sexual history, and comorbidities using a machine learning model? This question is naturally subdivided into risk level and diagnosis questions depending on the relative strengths of the models that prove effective for this data. Classifiers with hard predictions (i.e. k-NN) will be effective for diagnosis, while classifiers with probabilistic predictions (i.e. logistic regression) will be effective for predicting level of risk depending on computed prediction probabilities.
+Our primary research question is: can we diagnose or stratify risk for cervical cancer based on lifestyle factors, sexual history, and comorbidities using a machine learning model? This question is naturally subdivided into risk level and diagnosis questions depending on the relative strengths of the models that prove effective for this data. Classifiers with hard predictions (i.e. k-NN) are effective for diagnosis, while classifiers with probabilistic predictions (i.e. logistic regression) are effective for predicting level of risk depending on computed prediction probabilities.
 
 This research question is important because of the importance of early diagnoses in cancer patients, where the timing of diagnosis can mean the difference between treatable and terminal illness, often with a small margin of error. Successful implementation of this project will not only add an additional, non invasive diagnostic tool (based solely upon medical records and subjective self-reported patient data rather than in-person examination), it will also help identify at-risk individuals who can be more closely monitored for cervical cancer before it develops and progresses.
 
 This data is sourced from 'Transfer Learning with Partial Observability Applied to Cervical Cancer Screening.'(2017) by Kelwin Fernandes, Jaime S. Cardoso, and Jessica Fernandes. It was accessed through the UCI Machine Learning Repository, found here: <https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29>. The data is composed of survey results and medical records for 858 female patients from 'Hospital Universitario de Caracas' in Caracas, Venezuela, alongside the results of four traditional diagnosis tests (i.e. biopsy).
 
-Our plan to analyze this data is to deploy and evaluate a number of classification models to establish which type of model will be most effective in classifying this data. Data will first be split into training and test sets. Initial EDA on training data will then include investigating the distribution of missing values (due to missing/ 'prefer not to say' survey responses), as well as visualizing distributions of each potential feature for both the positive and negative diagnosis class using bar charts and histograms to identify intially promising classification characteristics. Simple tables will also be prepared to investigate class imbalance in the dataset.
+Data was first split into training and test sets. Initial EDA on training data included investigating the distribution of missing values (due to missing/ 'prefer not to say' survey responses), as well as visualizing distributions of each potential feature for both the positive and negative diagnosis class using bar charts and histograms to identify intially promising classification characteristics. Simple tables were also prepared to investigate class imbalance in the dataset.
 
-Proposed models to be tested include Decision Trees, kNN, SVC, Naive Bayes, and Logistic Regression, though this scope may increase as the analysis proceeds depending on results. Models will be fit to training data and evaluated via cross-validation. Promising models will then be further tuned and evaluated by cross-validation, with a focus on maximizing recall/ minimizing type II error due to the dangers posed by false negatives in this diagnosis/ risk identification context, though still valuing f1/ precision to avoid an unacceptably excessive false positive rate. Successful models will be fit to the entire training set and scored against test data. Final results will be presented in the form of confusion matrices, PR Curves and ROC curves, with focus again being placed on recall and f1 score. with promising models being deemed fit for deployment.
+The modelling process involved training and testing the dataset on a variety of models to investigate what algorithms might be suitable for this problem. Models tested include Decision Trees, kNN, SVC, Naive Bayes, Logistic Regression, and Random Forests. Models were assessed primarily on the criteria of maximum recall to minimize Type II Error, with a working threshold of 0.28 precision (twice the population positive rate), set quite low due to the dangers of false negatives in the diagnosis/ risk identification context. Models were run in their default form before undergoing hyperparameter tuning, and finally evaluation on the test set. 
+
+Final results are presented in the form of PR Curves, and test scores for precision, recall, f1 and AUC. Unfortunately, no model seems sufficient to provide a deployment worthy level of performance, with the closest contender being SVC. 
+
+Further exploration may be meritted to investigate other models that may more accurately capture the data/target relationship, feature engineering and transformation, and testing of model decision thresholds based on the PR curves. 
 
 ## Usage
 
 LINK TO ENV FILE: https://github.com/UBC-MDS/cervical-cancer-group7/blob/main/environment.yaml
 
-To run the exploratory data analysis, follow these steps:
+PIPELINE FLOWCHART:
 
--   Download `download_data_script.py` and `src/cervical_cancer_data_eda.ipynb` to a folder on your device.
+![](src/AnalysisPipeline.png)
 
--   Type the following command in the terminal inside this folder: python `download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="rfcc.csv"`
+Please refer to the above flowchart for an overview of the analysis pipeline
 
--   Open `cervical_cancer_data_eda.ipynb` using Jupyter.
+To run the data analysis on your local device, follow these steps:
 
--   Run the notebook(provided the right environment which will be provided in future)
+1. Clone this repository to your local device 
+2. Run the following script to download the data: `python download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="risk_factors_cervical_cancer.csv"` (input: the data url)
+3. Run the following script to clean and split the data: `python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"` (input: the downloaded data)
+3. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run `python eda_figures.py --train_data='../data/processed/train.csv' --out_file='../results'` to generate the outputs (input: training set)
+4. Run the following script to train the models: `python model_training.py --data_path='../data/processed/train.csv' --output_path_cv='../results'` (input: training set)
+5. Run the following script to test the models and generate results: `python model_training.py --data_path='../data/processed/test.csv' --output_path_cv='../results'` (input: test set)
 
 ## License
 
