@@ -175,7 +175,7 @@ def main( data_path, output_path):
     # All models
 
     all_test_results = pd.DataFrame( test_results)
-    all_test_results.to_csv( 'test-results.csv')
+    all_test_results.to_csv( f'{output_path}/test-results.csv')
 
 
 if __name__ == "__main__":
