@@ -10,12 +10,13 @@ Options:
 --output_path_cv=<output_path_cv> Desired path for the performance results returned.
 
 Example:
-python model_training.py --data_path='../data/processed/train.csv' --output_path_cv='../results'
+python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'
 '''
 
 from docopt import docopt
 import numpy as np
 import pandas as pd
+import os
 from joblib import dump, load
 from sklearn.model_selection import cross_val_score, cross_validate, train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, FunctionTransformer, PowerTransformer, OneHotEncoder
@@ -132,7 +133,11 @@ def main( data_path, output_path):
     cv_result_dict[ 'KNN_opt'] = pd.DataFrame( cv_result_knn_opt).agg( [ 'mean', 'std']).T
 
     pipe_knn_opt.fit( X, y)
-    dump( pipe_knn_opt, 'pipe_knn_opt.joblib')
+    try:
+    	dump( pipe_knn_opt, 'binary_files/pipe_knn_opt.joblib')
+    except:
+    	os.makedirs(os.path.dirname('binary_files/'))
+    	dump( pipe_knn_opt, 'binary_files/pipe_knn_opt.joblib')
     print( 'KNN: Done')
 
     # SVC ---
@@ -161,7 +166,7 @@ def main( data_path, output_path):
     cv_result_dict[ 'SVC_opt'] = pd.DataFrame( cv_result_svc_opt).agg( [ 'mean', 'std']).T
 
     pipe_svc_opt.fit( X, y)
-    dump( pipe_svc_opt, 'pipe_svc_opt.joblib')
+    dump( pipe_svc_opt, 'binary_files/pipe_svc_opt.joblib')
 
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_svc, pr_curve_svc = pr_curve( pipe_svc_opt, X_train, X_validation, y_train, y_validation)
@@ -203,7 +208,7 @@ def main( data_path, output_path):
     cv_result_dict[ 'RFC_opt'] = pd.DataFrame( cv_result_rfc_opt).agg( [ 'mean', 'std']).T
 
     pipe_rfc_opt.fit( X, y)
-    dump( pipe_rfc_opt, 'pipe_rfc_opt.joblib')
+    dump( pipe_rfc_opt, 'binary_files/pipe_rfc_opt.joblib')
     pr_df_rfc, pr_curve_svc = pr_curve( pipe_rfc_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
     pr_df_rfc.to_csv( f'{output_path}/threshold_rfc.csv')
@@ -218,7 +223,7 @@ def main( data_path, output_path):
     pipe_nb.fit( X, y) # As no hyperparameter optimization for Gaussian naive Bayes
 
     pipe_nb.fit( X, y)
-    dump( pipe_nb, 'pipe_nb.joblib')
+    dump( pipe_nb, 'binary_files/pipe_nb.joblib')
     pr_df_nb, pr_curve_nb = pr_curve( pipe_nb, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')
     pr_df_nb.to_csv( f'{output_path}/threshold_nb.csv')
@@ -252,7 +257,7 @@ def main( data_path, output_path):
     cv_result_dict[ 'LogReg_opt'] = pd.DataFrame( cv_result_logreg_opt).agg( [ 'mean', 'std']).T
 
     pipe_logreg_opt.fit( X, y)
-    dump( pipe_logreg_opt, 'pipe_logreg_opt.joblib')
+    dump( pipe_logreg_opt, 'binary_files/pipe_logreg_opt.joblib')
     pr_df_logreg, pr_curve_logreg = pr_curve( pipe_logreg_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_logreg, f'{output_path}/pr_curve_logreg.png')
     pr_df_logreg.to_csv( f'{output_path}/threshold_logreg.csv')
@@ -281,7 +286,7 @@ def main( data_path, output_path):
     cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std']).T
 
     pipe_lsvc_opt.fit( X, y)
-    dump( pipe_lsvc_opt, 'pipe_lsvc_opt.joblib')
+    dump( pipe_lsvc_opt, 'binary_files/pipe_lsvc_opt.joblib')
     pr_df_lsvc, pr_curve_lsvc = pr_curve( pipe_lsvc_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_lsvc, f'{output_path}/pr_curve_lsvc.png')
     pr_df_lsvc.to_csv( f'{output_path}/threshold_lsvc.csv')

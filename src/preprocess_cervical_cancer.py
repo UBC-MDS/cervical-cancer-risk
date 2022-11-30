@@ -11,7 +11,7 @@ Usage: src/preprocess_cervical_cancer.py --input_file=<input_file> --out_dir=<ou
 
 Example script to run in terminal: 
 
-python preprocess_cervical_cancer.py --input_file="../data/raw/risk_factors_cervical_cancer.csv" --out_dir="../data/processed"
+python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"
 
   
 Options:
@@ -68,7 +68,7 @@ def main(input_file, out_dir):
         train_df.to_csv(f'{out_dir}/train.csv', index=False)
         test_df.to_csv(f'{out_dir}/test.csv', index=False)
     except:
-        os.makedirs(os.path.dirname('../data/processed/'))
+        os.makedirs(os.path.dirname('data/processed/'))
         train_df.to_csv(f'{out_dir}/train.csv', index=False)
         test_df.to_csv(f'{out_dir}/test.csv', index=False)
 
