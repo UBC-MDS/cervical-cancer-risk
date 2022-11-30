@@ -8,7 +8,7 @@ Usage: src/eda_figures.py --train_data=<train_data> --out_file=<out_file>
 
 Example:
 
-python eda_figures.py --train_data='../data/processed/train.csv' --out_file='../results'
+python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'
 
 Options:
 --train_data=<train_data>   Path (including filename) of where the data is stored

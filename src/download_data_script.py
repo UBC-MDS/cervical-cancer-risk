@@ -13,7 +13,7 @@ Options:
 
 Example script to run in terminal: 
 
-python download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="risk_factors_cervical_cancer.csv"
+python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"
 
 """
 
@@ -32,10 +32,10 @@ def main(url, output_file):
     data = pd.read_csv(url, header=None)
 
     try:
-        data.to_csv(f'../data/raw/{output_file}', index=False)
+        data.to_csv(output_file, index=False)
     except:
-        os.makedirs(os.path.dirname(f'../data/raw/'))
-        data.to_csv(f'../data/raw/{output_file}', index=False)
+        os.makedirs(os.path.dirname('data/raw/'))
+        data.to_csv(output_file, index=False)
 
 if __name__ == "__main__":
     main(dc["--url"], dc["--output_file"])
