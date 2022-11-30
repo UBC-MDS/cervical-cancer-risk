@@ -13,11 +13,6 @@ Example:
 python model_training.py --data_path='../data/processed/train.csv' --output_path_cv='../results'
 '''
 
-def warn(*args, **kwargs):
-    pass
-import warnings
-warnings.warn = warn
-
 from docopt import docopt
 import numpy as np
 import pandas as pd
@@ -28,7 +23,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
@@ -40,15 +35,10 @@ alt.renderers.enable('mimetype')
 import vl_convert as vlc
 # alt.data_transformers.enable('data_server')
 
-opt = docopt(__doc__)
+import shutup
+shutup.please()
 
-def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
-    df = pd.DataFrame( confusion_matrix( y_test, y_hat, labels = labels))
-    df.columns = labels
-    df = pd.concat( [ df], axis = 1, keys = ['Predicted'])
-    df.index = labels
-    df = pd.concat( [df], axis = 0, keys = ['Actual'])
-    return df
+opt = docopt(__doc__)
 
 def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
     df = pd.DataFrame( confusion_matrix( y_test, y_hat, labels = labels))
@@ -67,17 +57,27 @@ def better_metrics( y_test, y_hat):
         'precision': precision, 'recall': recall, 'f1': f1, 'auc': auc}
     return metrics_dict
 
-def pr_curve( precision, recall):
+def pr_curve( model, X_train, X_test, y_train, y_test):
+    model.fit( X_train, y_train)
+    try:
+        proba = model.predict_proba( X_test)[ :, 1]
+    except:
+        proba = model.decision_function( X_test)
+    precision, recall, thresholds = precision_recall_curve( y_test, proba)
+    thresholds = np.append( thresholds, 1)
+    
     plot_df = pd.DataFrame( {
         'precision': precision,
-        'recall': recall
+        'recall': recall,
+        'thresholds': thresholds
     })
-
-    chart = alt.Chart( plot_df).mark_line().encode(
+    
+    chart = alt.Chart( plot_df).mark_point().encode(
         x = 'precision',
-        y = 'recall'
+        y = 'recall',
+        tooltip = 'thresholds'
     ).properties( height = 300, width = 300)
-    return chart
+    return plot_df, chart
 
 def save_chart(chart, filename, scale_factor=1):
     '''
@@ -102,8 +102,6 @@ def save_chart(chart, filename, scale_factor=1):
     else:
         raise ValueError("Only svg and png formats are supported")
 # Function by Joel Ostblom
-
-import shutup
 
 def main( data_path, output_path):
     data_full = pd.read_csv( data_path)
@@ -181,6 +179,11 @@ def main( data_path, output_path):
 
     pipe_svc_opt.fit( X, y)
     dump( pipe_svc_opt, 'pipe_svc_opt.joblib')
+
+    X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
+    pr_df_svc, pr_curve_svc = pr_curve( pipe_svc_opt, X_train, X_validation, y_train, y_validation)
+    save_chart( pr_curve_svc, f'{output_path}/pr_curve_svc.png')
+    pr_df_svc.to_csv( f'{output_path}/threshold_svc.csv')
     print( 'Support Vector Classifier: Done')
 
     # RFC ---
@@ -218,6 +221,9 @@ def main( data_path, output_path):
 
     pipe_rfc_opt.fit( X, y)
     dump( pipe_rfc_opt, 'pipe_rfc_opt.joblib')
+    pr_df_rfc, pr_curve_svc = pr_curve( pipe_rfc_opt, X_train, X_validation, y_train, y_validation)
+    save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
+    pr_df_rfc.to_csv( f'{output_path}/threshold_rfc.csv')
     print( 'Random Forest Classifier: Done')
 
     # Naive Bayes ---
@@ -230,6 +236,9 @@ def main( data_path, output_path):
 
     pipe_nb.fit( X, y)
     dump( pipe_nb, 'pipe_nb.joblib')
+    pr_df_nb, pr_curve_nb = pr_curve( pipe_nb, X_train, X_validation, y_train, y_validation)
+    save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')
+    pr_df_nb.to_csv( f'{output_path}/threshold_nb.csv')
     print( 'Gaussian Naive Bayes Classifier: Done')
 
     # Logistic Regression ---
@@ -240,8 +249,7 @@ def main( data_path, output_path):
 
     param_dist_logreg = {
         'logisticregression__C': [ 10**x for x in range( -2, 5)],
-        'logisticregression__penalty': [ 'none', 'elasticnet'],
-        'logisticregression__l1_ratio': [ 0, 0.25, 0.5, 0.75, 1]
+        'logisticregression__penalty': [ 'l1', 'l2', 'elasticnet']
     }
 
     grid_search_logreg = GridSearchCV(
@@ -255,7 +263,6 @@ def main( data_path, output_path):
     pipe_logreg_opt = make_pipeline( column_transformer, LogisticRegression( max_iter = 1000, solver = 'saga',
                                                                         C = best_params_logreg[ 'logisticregression__C'],
                                                                         penalty = best_params_logreg[ 'logisticregression__penalty'],
-                                                                        l1_ratio = best_params_logreg[ 'logisticregression__l1_ratio'],
                                                                         class_weight = 'balanced', random_state = 123))
 
     cv_result_logreg_opt = cross_validate( pipe_logreg_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
@@ -263,8 +270,40 @@ def main( data_path, output_path):
 
     pipe_logreg_opt.fit( X, y)
     dump( pipe_logreg_opt, 'pipe_logreg_opt.joblib')
+    pr_df_logreg, pr_curve_logreg = pr_curve( pipe_logreg_opt, X_train, X_validation, y_train, y_validation)
+    save_chart( pr_curve_logreg, f'{output_path}/pr_curve_logreg.png')
+    pr_df_logreg.to_csv( f'{output_path}/threshold_logreg.csv')
     print( 'Logistic Regression Classifier: Done')
 
+    # Linear SVC
+    pipe_lsvc = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123))
+    cv_result_lsvc = cross_validate( pipe_lsvc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
+    cv_result_dict[ 'LinearSVC'] = pd.DataFrame( cv_result_lsvc).agg( [ 'mean', 'std'])
+
+    param_dist = {
+    'linearsvc__C': [ 10**x for x in range( -2, 5)]
+    }
+
+    grid_search_lsvc = GridSearchCV(
+        pipe_lsvc, param_dist, cv = 5, scoring = 'precision', n_jobs=-1, return_train_score = True
+    )
+
+    grid_search_lsvc.fit( X_train, y_train)
+    best_params_rfc = grid_search_lsvc.best_params_
+
+    pipe_lsvc_opt = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123,
+                                C = best_params_rfc[ 'linearsvc__C']))
+    
+    cv_result_lsvc_opt = cross_validate( pipe_lsvc_opt, X, y, cv = 5, return_train_score = True)
+    cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std'])
+
+    pipe_lsvc_opt.fit( X, y)
+    dump( pipe_lsvc_opt, 'pipe_lsvc_opt.joblib')
+    pr_df_lsvc, pr_curve_lsvc = pr_curve( pipe_lsvc_opt, X_train, X_validation, y_train, y_validation)
+    save_chart( pr_curve_lsvc, f'{output_path}/pr_curve_lsvc.png')
+    pr_df_lsvc.to_csv( f'{output_path}/threshold_lsvc.csv')
+    print( 'Linear Support Vector Classifier: Done')
+    
     # Cross-validation results of all models
 
     all_cv_results = pd.concat( cv_result_dict, axis = 1)

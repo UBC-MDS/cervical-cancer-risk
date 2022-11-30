@@ -42,14 +42,6 @@ def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
     df = pd.concat( [df], axis = 0, keys = ['Actual'])
     return df
 
-def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
-    df = pd.DataFrame( confusion_matrix( y_test, y_hat, labels = labels))
-    df.columns = labels
-    df = pd.concat( [ df], axis = 1, keys = ['Predicted'])
-    df.index = labels
-    df = pd.concat( [df], axis = 0, keys = ['Actual'])
-    return df
-
 def better_metrics( y_test, y_hat):
     precision = precision_score( y_test, y_hat)
     recall = recall_score( y_test, y_hat)
@@ -58,42 +50,6 @@ def better_metrics( y_test, y_hat):
     metrics_dict = {
         'precision': precision, 'recall': recall, 'f1': f1, 'auc': auc}
     return metrics_dict
-
-def pr_curve( precision, recall):
-    plot_df = pd.DataFrame( {
-        'precision': precision,
-        'recall': recall
-    })
-
-    chart = alt.Chart( plot_df).mark_line().encode(
-        x = 'precision',
-        y = 'recall'
-    ).properties( height = 300, width = 300)
-    return chart
-
-def save_chart(chart, filename, scale_factor=1):
-    '''
-    Save an Altair chart using vl-convert
-    
-    Parameters
-    ----------
-    chart : altair.Chart
-        Altair chart to save
-    filename : str
-        The path to save the chart to
-    scale_factor: int or float
-        The factor to scale the image resolution by.
-        E.g. A value of `2` means two times the default resolution.
-    '''
-    if filename.split('.')[-1] == 'svg':
-        with open(filename, "w") as f:
-            f.write(vlc.vegalite_to_svg(chart.to_dict()))
-    elif filename.split('.')[-1] == 'png':
-        with open(filename, "wb") as f:
-            f.write(vlc.vegalite_to_png(chart.to_dict(), scale=scale_factor))
-    else:
-        raise ValueError("Only svg and png formats are supported")
-# Function by Joel Ostblom
 
 def main( data_path, output_path):
     data_full = pd.read_csv( data_path)
@@ -126,11 +82,6 @@ def main( data_path, output_path):
     y_hat_svc_opt = pipe_svc_opt.predict( X)
     test_results[ 'SVC_opt'] = better_metrics( y, y_hat_svc_opt)
 
-    precision_svc, recall_svc, thresholds_svc = precision_recall_curve( y, pipe_svc_opt.decision_function( X))
-
-    pr_curve_svc = pr_curve( precision_svc, recall_svc)
-    save_chart( pr_curve_svc, f'{output_path}/pr_curve_svc.png')
-
     print( 'Support Vector Classifier: Done.')
 
     # RFC ---
@@ -138,11 +89,6 @@ def main( data_path, output_path):
 
     y_hat_rfc_opt = pipe_rfc_opt.predict( X)
     test_results[ 'RFC_opt'] = better_metrics( y, y_hat_rfc_opt)
-
-    precision_rfc, recall_rfc, thresholds_rfc = precision_recall_curve( y, pipe_rfc_opt.predict_proba( X)[ :, 1])
-
-    pr_curve_rfc = pr_curve( precision_rfc, recall_rfc)
-    save_chart( pr_curve_rfc, f'{output_path}/pr_curve_rfc.png')
 
     print( 'Random Forest Classifier: Done.')
 
@@ -152,11 +98,6 @@ def main( data_path, output_path):
     y_hat_nb = pipe_nb.predict( X)
     test_results[ 'NB_opt'] = better_metrics( y, y_hat_nb)
 
-    precision_nb, recall_nb, thresholds_nb = precision_recall_curve( y, pipe_nb.predict_proba( X)[ :, 1])
-
-    pr_curve_nb = pr_curve( precision_nb, recall_nb)
-    save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')
-
     print( 'Gaussian Naive Bayes Classifier: Done.')
 
     # Logistic Regression ---
@@ -165,17 +106,20 @@ def main( data_path, output_path):
     y_hat_logreg_opt = pipe_logreg_opt.predict( X)
     test_results[ 'LogReg_opt'] = better_metrics( y, y_hat_logreg_opt)
 
-    precision_logreg, recall_logreg, thresholds_logreg = precision_recall_curve( y, pipe_logreg_opt.predict_proba( X)[ :, 1])
-
-    pr_curve_logreg = pr_curve( precision_logreg, recall_logreg)
-    save_chart( pr_curve_logreg, f'{output_path}/pr_curve_logreg.png')
-
     print( 'Logistic Regression Classifier: Done.')
+
+    # Linear SVC ---
+    pipe_lsvc_opt = load( 'pipe_lsvc_opt.joblib')
+
+    y_hat_lsvc_opt = pipe_lsvc_opt.predict( X)
+    test_results[ 'LinearSVC_opt'] = better_metrics( y, y_hat_lsvc_opt)
+
+    print( 'Logistic Support Vector Classifier: Done.')
 
     # All models
 
     all_test_results = pd.DataFrame( test_results)
-    all_test_results.to_csv( 'test-results.csv')
+    all_test_results.to_csv( f'{output_path}/test-results.csv')
 
 
 if __name__ == "__main__":
