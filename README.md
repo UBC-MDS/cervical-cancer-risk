@@ -25,6 +25,10 @@ Further exploration may be meritted to investigate other models that may more ac
 
 LINK TO ENV FILE: https://github.com/UBC-MDS/cervical-cancer-group7/blob/main/environment.yaml
 
+To create the environment, run the following command:
+
+`conda env create -f environment.yaml`
+
 PIPELINE FLOWCHART:
 
 https://raw.githubusercontent.com/UBC-MDS/cervical-cancer-group7/main/src/AnalysisPipeline.png
