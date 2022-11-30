@@ -27,20 +27,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, f1_score, precision_score, recall_score, roc_auc_score
 
-import altair as alt
-alt.renderers.enable('mimetype')
-import vl_convert as vlc
-# alt.data_transformers.enable('data_server')
-
 opt = docopt(__doc__)
-
-def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
-    df = pd.DataFrame( confusion_matrix( y_test, y_hat, labels = labels))
-    df.columns = labels
-    df = pd.concat( [ df], axis = 1, keys = ['Predicted'])
-    df.index = labels
-    df = pd.concat( [df], axis = 0, keys = ['Actual'])
-    return df
 
 def better_metrics( y_test, y_hat):
     precision = precision_score( y_test, y_hat)
@@ -64,30 +51,23 @@ def main( data_path, output_path):
     X = data_full[ columns_tbc]
     y = data_full[ 'risk']
 
-    # KNN ---
-
-    pipe_knn_opt = load( 'pipe_knn_opt.joblib')
-
-    y_hat_knn_opt = pipe_knn_opt.predict( X)
-
     test_results = {}
-    test_results[ 'KNN_opt'] = better_metrics( y, y_hat_knn_opt)
 
-    print( 'KNN: Done.')
-
-    # SVC ---
-
-    pipe_svc_opt = load( 'pipe_svc_opt.joblib')
-
-    y_hat_svc_opt = pipe_svc_opt.predict( X)
-    test_results[ 'SVC_opt'] = better_metrics( y, y_hat_svc_opt)
-
-    print( 'Support Vector Classifier: Done.')
-
+    # Thresholds ---
+    thresholds = pd.read_csv( 'thresholds-used.csv', index_col = 0)
+    thld_rfc = float( thresholds.loc[ 'RFC'])
+    thld_nb = float( thresholds.loc[ 'NB'])
+    thld_lsvc = float( thresholds.loc[ 'LinearSVC'])
+    
     # RFC ---
     pipe_rfc_opt = load( 'pipe_rfc_opt.joblib')
 
-    y_hat_rfc_opt = pipe_rfc_opt.predict( X)
+    def rfc_with_threshold( pipe_rfc, X_test, threshold):
+        proba = pipe_rfc.predict_proba( X_test)[ :, 1]
+        y_hat = proba > threshold
+        return y_hat
+
+    y_hat_rfc_opt = rfc_with_threshold( pipe_rfc_opt, X, thld_rfc)
     test_results[ 'RFC_opt'] = better_metrics( y, y_hat_rfc_opt)
 
     print( 'Random Forest Classifier: Done.')
@@ -95,32 +75,32 @@ def main( data_path, output_path):
     # Naive Bayes ---
     pipe_nb = load( 'pipe_nb.joblib')
 
-    y_hat_nb = pipe_nb.predict( X)
+    def nb_with_threshold( pipe_nb, X_test, threshold):
+        proba = pipe_nb.predict_proba( X_test)[ :, 1]
+        y_hat = proba > threshold
+        return y_hat
+
+    y_hat_nb = nb_with_threshold( pipe_nb, X, thld_nb)
     test_results[ 'NB_opt'] = better_metrics( y, y_hat_nb)
 
     print( 'Gaussian Naive Bayes Classifier: Done.')
 
-    # Logistic Regression ---
-    pipe_logreg_opt = load( 'pipe_logreg_opt.joblib')
-
-    y_hat_logreg_opt = pipe_logreg_opt.predict( X)
-    test_results[ 'LogReg_opt'] = better_metrics( y, y_hat_logreg_opt)
-
-    print( 'Logistic Regression Classifier: Done.')
-
     # Linear SVC ---
     pipe_lsvc_opt = load( 'pipe_lsvc_opt.joblib')
+    def lsvc_with_threshold( pipe_lsvc, X_test, threshold):
+            proba = pipe_lsvc.decision_function( X_test)
+            y_hat = proba > threshold
+            return y_hat
 
-    y_hat_lsvc_opt = pipe_lsvc_opt.predict( X)
+    y_hat_lsvc_opt = lsvc_with_threshold( pipe_lsvc_opt, X, thld_lsvc)
     test_results[ 'LinearSVC_opt'] = better_metrics( y, y_hat_lsvc_opt)
 
-    print( 'Logistic Support Vector Classifier: Done.')
+    print( 'Linear Support Vector Classifier: Done.')
 
     # All models
 
     all_test_results = pd.DataFrame( test_results)
     all_test_results.to_csv( f'{output_path}/test-results.csv')
 
-
 if __name__ == "__main__":
-  main(opt["--data_path"], opt["--output_path"])
+  main( opt["--data_path"], opt["--output_path"])

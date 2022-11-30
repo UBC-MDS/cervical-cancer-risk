@@ -278,7 +278,7 @@ def main( data_path, output_path):
     # Linear SVC
     pipe_lsvc = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123))
     cv_result_lsvc = cross_validate( pipe_lsvc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'LinearSVC'] = pd.DataFrame( cv_result_lsvc).agg( [ 'mean', 'std'])
+    cv_result_dict[ 'LinearSVC'] = pd.DataFrame( cv_result_lsvc).agg( [ 'mean', 'std']).T
 
     param_dist = {
     'linearsvc__C': [ 10**x for x in range( -2, 5)]
@@ -294,8 +294,8 @@ def main( data_path, output_path):
     pipe_lsvc_opt = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123,
                                 C = best_params_rfc[ 'linearsvc__C']))
     
-    cv_result_lsvc_opt = cross_validate( pipe_lsvc_opt, X, y, cv = 5, return_train_score = True)
-    cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std'])
+    cv_result_lsvc_opt = cross_validate( pipe_lsvc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
+    cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std']).T
 
     pipe_lsvc_opt.fit( X, y)
     dump( pipe_lsvc_opt, 'pipe_lsvc_opt.joblib')
