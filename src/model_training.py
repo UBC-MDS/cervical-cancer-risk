@@ -40,23 +40,6 @@ shutup.please()
 
 opt = docopt(__doc__)
 
-def better_confusion_matrix( y_test, y_hat, labels = [ 0, 1]):
-    df = pd.DataFrame( confusion_matrix( y_test, y_hat, labels = labels))
-    df.columns = labels
-    df = pd.concat( [ df], axis = 1, keys = ['Predicted'])
-    df.index = labels
-    df = pd.concat( [df], axis = 0, keys = ['Actual'])
-    return df
-
-def better_metrics( y_test, y_hat):
-    precision = precision_score( y_test, y_hat)
-    recall = recall_score( y_test, y_hat)
-    f1 = f1_score( y_test, y_hat)
-    auc = roc_auc_score( y_test, y_hat)
-    metrics_dict = {
-        'precision': precision, 'recall': recall, 'f1': f1, 'auc': auc}
-    return metrics_dict
-
 def pr_curve( model, X_train, X_test, y_train, y_test):
     model.fit( X_train, y_train)
     try:
@@ -154,7 +137,7 @@ def main( data_path, output_path):
 
     # SVC ---
 
-    pipe_svc = make_pipeline( column_transformer, SVC( class_weight = 'balanced'))
+    pipe_svc = make_pipeline( column_transformer, SVC( class_weight = 'balanced', random_state = 123))
     cv_result_svc = cross_validate( pipe_svc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
     cv_result_dict[ 'SVC'] = pd.DataFrame( cv_result_svc).agg( [ 'mean', 'std']).T
 
