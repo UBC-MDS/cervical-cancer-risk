@@ -22,7 +22,7 @@ results/cv-results.csv results/mean-cv-results.csv: src/model_training.py data/p
 	python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'
 
 
-#creates optimised model for the training data
+#tests the model for the test data 
 results/pr_curve_logreg.png results/pr_curve_nb.png results/pr_curve_rfc.png results/pr_curve_svc.png results/test-results.csv: src/model_testing.py data/processed/test.csv
 	python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'
 
