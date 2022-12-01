@@ -13,6 +13,7 @@ dependencies:
   - pandas<1.5
   - docopt
   - pip
+  - pandoc>=1.12.3
   - pip:
     - joblib==1.1.0
     - selenium==4.2.0
