@@ -37,14 +37,15 @@ Please refer to the above flowchart for an overview of the analysis pipeline
 
 To run the data analysis on your local device, follow these steps. These scripts can be run in their current quoted form and will automatically generate the files on your device without manipulating the arguments.
 
-1. Clone this repository to your local device and navigate to the SRC subdirectory 
+1. Clone this repository to your local device or download the source code.
 2. Run the following script to download the data: `python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"` (input: the data url, output: raw dataset)
 3. Run the following script to clean and split the data: `python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"` (input: the raw data, output: cleaned and split data)
 3. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run `python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'` to generate the outputs (input: training set, output: literate EDA notebook, and/or EDA figures)
 4. Run the following script to train the models: `python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'` (input: training set, output: model objects saved as .joblib files)
 5. Run the following script to test the models and generate results: `python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'` (input: test set and traind models, output: final figures and tables).
+6. (Optional) To re-render the final report, run the following script  `Rscript -e "rmarkdown::render('Analysis_Docs/Analysis.Rmd')"` (input: results figures and tables, output: .html analysis)
 
-Final results can be found in the results subdirectory, and the final written report in the Analysis_Docs subdirectory. The final report does not require a script, but if rendering the .Rmd, the product of the above scripts must be present with the correct (default) file names/paths on your device. 
+Raw final results can be found in the results subdirectory, and the final written report in the Analysis_Docs subdirectory. The final report can be rendered using the script above, the .html can be loaded in browser, or the .Rmd file can be rendered on RStudio as long as the files produced by the other scripts above have not been moved/ renamed. 
 
 ## License
 
