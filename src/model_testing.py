@@ -14,6 +14,7 @@ python src/model_testing.py --data_path='data/processed/test.csv' --output_path=
 from docopt import docopt
 import numpy as np
 import pandas as pd
+import os
 from joblib import dump, load
 from sklearn.model_selection import (
     cross_val_score,
@@ -128,8 +129,11 @@ def main(data_path, output_path):
     # All models
 
     all_test_results = pd.DataFrame(test_results)
-    all_test_results.to_csv(f"{output_path}/test-results.csv")
-
+    try:
+        all_test_results.to_csv(f"{output_path}/test-results.csv")
+    except:
+        os.makedirs(os.path.dirname('results/'))
+        all_test_results.to_csv(f"{output_path}/test-results.csv")
 
 if __name__ == "__main__":
     main(opt["--data_path"], opt["--output_path"])

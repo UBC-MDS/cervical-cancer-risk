@@ -210,7 +210,11 @@ def main( data_path, output_path):
     pipe_rfc_opt.fit( X, y)
     dump( pipe_rfc_opt, 'binary_files/pipe_rfc_opt.joblib')
     pr_df_rfc, pr_curve_svc = pr_curve( pipe_rfc_opt, X_train, X_validation, y_train, y_validation)
-    save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
+    try:
+        save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
+    except:
+        os.makedirs(os.path.dirname('results/'))
+        save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
     pr_df_rfc.to_csv( f'{output_path}/threshold_rfc.csv')
     print( 'Random Forest Classifier: Done')
 
@@ -295,6 +299,7 @@ def main( data_path, output_path):
     # Cross-validation results of all models
 
     all_cv_results = pd.concat( cv_result_dict, axis = 1)
+    
     all_cv_results.to_csv( f'{output_path}/cv-results.csv')
 
     all_cv_results_mean = all_cv_results.T.xs( 'mean', level = 1).T # Probably not the most elegant way to do that.
