@@ -37,6 +37,12 @@ knitr::include_graphics("../results/binary_feat.png")
 
 ------------------------------------------------------------------------
 
+### Feature Selection and Target Transformation
+
+Given the large number of missing values and that some variables in the data set are essentially describing similar biological features, we only selected a subset of variables. For example, we exclude most of the STD columns due to their lack of variance, while including `STD:condylomatosis` as it is an umbrella term in STD pathology.
+
+Target transformation was performed in this project. Originally, the data set contains 4 target variables: `Hinselmann`, `Schiller`, `Cytology`, and `Biopsy`. They represent 4 types of diagnostic methods. We combined them with a union operation into 1 single target variable to minimize complexity.
+
 ### Modelling
 
 Machine Learning models were then applied using Scikit-Learn (@scikit-learn). The modelling process involved training and testing the dataset on a variety of models to investigate what algorithms might be suitable for this problem. Models tested include Decision Trees, kNN, SVC, Naive Bayes, Logistic Regression, and Random Forests. All models were initially assessed with default hyperparameters, with kNN and Decision Trees being eliminated due to poor performance. Remaining models were optimized via hyperparameter tuning and applied to the test set.
