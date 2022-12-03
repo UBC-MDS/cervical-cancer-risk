@@ -25,7 +25,7 @@ This data is sourced from 'Transfer Learning with Partial Observability Applied 
 
 ## Methods
 
-#### Splitting, Cleaning and EDA
+### Splitting, Cleaning and EDA
 
 Data was first split 80/20 into a training and test set. Exploratory Data Analysis (EDA) was carried out on the train set and can be replicated use the scripts provided in the usage section. Key EDA findings include some features having an extremely large number of missing or null values due to the personal nature of the questions involved (i.e. number of sexual partners), with many respondents preferring not to say. There was also a significant prevalence of class imbalance for many features, including the targets. While this is not inherently problematic thanks to balancing arguments in the models, the small size of the data set (n = 858 pre split) means this analysis relies on a very small number of positive examples, reducing statistical power. Examples of this class imbalance is shown below, with the bottom row being the potential targets.
 
@@ -37,7 +37,7 @@ knitr::include_graphics("../results/binary_feat.png")
 
 ------------------------------------------------------------------------
 
-#### Modelling
+### Modelling
 
 Machine Learning models were then applied using Scikit-Learn (@scikit-learn). The modelling process involved training and testing the dataset on a variety of models to investigate what algorithms might be suitable for this problem. Models tested include Decision Trees, kNN, SVC, Naive Bayes, Logistic Regression, and Random Forests. All models were initially assessed with default hyperparameters, with kNN and Decision Trees being eliminated due to poor performance. Remaining models were optimized via hyperparameter tuning and applied to the test set.
 
@@ -45,7 +45,7 @@ Models were assessed primarily on the criteria of maximum recall to minimize Typ
 
 Test set results are presented in the results section below.
 
-#### Packing and Automation
+### Packing and Automation
 
 Packaging of this analysis was done using docopt scripts (@doc).
 
