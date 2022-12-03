@@ -1,3 +1,6 @@
+# Author: Morris Chan
+# Date 2022-12-02
+
 '''This script takes the training data set and returns the optimized models to be tested in .joblib formats.
 The models will be exported in the directory where this script is found.
 Tables for cross-validation results will be created in the specified directory.
@@ -87,33 +90,9 @@ def save_chart(chart, filename, scale_factor=1):
         raise ValueError("Only svg and png formats are supported")
 # Function by Joel Ostblom
 
-def main( data_path, output_path):
-    data_full = pd.read_csv( data_path)
-
-    numeric_features = [ 'Age', 'Number of sexual partners', 'First sexual intercourse',
-        'Num of pregnancies', 'Hormonal Contraceptives (years)', 'IUD (years)', 'STDs (number)']
-
-    binary_features = [ 'STDs:condylomatosis', 'Smokes', 'Dx:Cancer', 'Dx:CIN', 'Dx:HPV']
-
-    columns_tbc = numeric_features+binary_features
-
-    column_transformer = make_column_transformer(
-        ( make_pipeline( SimpleImputer( strategy = 'median'), StandardScaler()), numeric_features),
-        ( make_pipeline( SimpleImputer( strategy = 'constant', fill_value = 99), OneHotEncoder( handle_unknown = 'ignore')), binary_features)
-    )
-
-    X = data_full[ columns_tbc]
-    y = data_full[ 'risk']
-
-    # KNN ---
-
-    cv_result_dict = {}
-    scoring_metrics = [ 'precision', 'recall', 'f1']
-
+def knn_cv( X, y, column_transformer, scoring_metrics):
     pipe_knn = make_pipeline( column_transformer, KNeighborsClassifier()) # No class weight in KNN
-
     cv_result_knn = cross_validate( pipe_knn, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'KNN'] = pd.DataFrame( cv_result_knn).agg( [ 'mean', 'std']).T
 
     param_grid_knn = {
         "kneighborsclassifier__n_neighbors": list( range( 5, 35, 5))
@@ -130,7 +109,6 @@ def main( data_path, output_path):
     pipe_knn_opt = make_pipeline( column_transformer, KNeighborsClassifier( n_neighbors = best_params_knn['kneighborsclassifier__n_neighbors'])) # No class weight in KNN
 
     cv_result_knn_opt = cross_validate( pipe_knn_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'KNN_opt'] = pd.DataFrame( cv_result_knn_opt).agg( [ 'mean', 'std']).T
 
     pipe_knn_opt.fit( X, y)
     try:
@@ -138,13 +116,12 @@ def main( data_path, output_path):
     except:
     	os.makedirs(os.path.dirname('binary_files/'))
     	dump( pipe_knn_opt, 'binary_files/pipe_knn_opt.joblib')
-    print( 'KNN: Done')
 
-    # SVC ---
+    return cv_result_knn, cv_result_knn_opt
 
+def svc_cv( X, y, column_transformer, scoring_metrics, output_path):
     pipe_svc = make_pipeline( column_transformer, SVC( class_weight = 'balanced', random_state = 123))
     cv_result_svc = cross_validate( pipe_svc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'SVC'] = pd.DataFrame( cv_result_svc).agg( [ 'mean', 'std']).T
 
     param_dist_svc = {
         'svc__C': [ 10**x for x in range( -2, 5)],
@@ -163,7 +140,6 @@ def main( data_path, output_path):
                                                         C = best_params_svc[ 'svc__C'], class_weight = 'balanced'))
 
     cv_result_svc_opt = cross_validate( pipe_svc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'SVC_opt'] = pd.DataFrame( cv_result_svc_opt).agg( [ 'mean', 'std']).T
 
     pipe_svc_opt.fit( X, y)
     dump( pipe_svc_opt, 'binary_files/pipe_svc_opt.joblib')
@@ -172,13 +148,13 @@ def main( data_path, output_path):
     pr_df_svc, pr_curve_svc = pr_curve( pipe_svc_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_svc, f'{output_path}/pr_curve_svc.png')
     pr_df_svc.to_csv( f'{output_path}/threshold_svc.csv')
-    print( 'Support Vector Classifier: Done')
 
-    # RFC ---
+    return cv_result_svc, cv_result_svc_opt
 
+def rfc_cv( X, y, column_transformer, scoring_metrics, output_path):
+    
     pipe_rfc = make_pipeline( column_transformer, RandomForestClassifier( class_weight = 'balanced', random_state = 123))
     cv_result_rfc = cross_validate( pipe_rfc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'RFC'] = pd.DataFrame( cv_result_rfc).agg( [ 'mean', 'std']).T
 
     param_dist_rfc = {
         'randomforestclassifier__n_estimators': [ 100*x for x in range( 1, 11)],
@@ -205,10 +181,11 @@ def main( data_path, output_path):
                                                         class_weight = 'balanced', random_state = 123))
 
     cv_result_rfc_opt = cross_validate( pipe_rfc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'RFC_opt'] = pd.DataFrame( cv_result_rfc_opt).agg( [ 'mean', 'std']).T
 
     pipe_rfc_opt.fit( X, y)
     dump( pipe_rfc_opt, 'binary_files/pipe_rfc_opt.joblib')
+
+    X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_rfc, pr_curve_svc = pr_curve( pipe_rfc_opt, X_train, X_validation, y_train, y_validation)
     try:
         save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
@@ -216,28 +193,27 @@ def main( data_path, output_path):
         os.makedirs(os.path.dirname('results/'))
         save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
     pr_df_rfc.to_csv( f'{output_path}/threshold_rfc.csv')
-    print( 'Random Forest Classifier: Done')
 
-    # Naive Bayes ---
+    return cv_result_rfc, cv_result_rfc_opt
 
+def nb_cv( X, y, column_transformer, scoring_metrics, output_path):
+    
     pipe_nb = make_pipeline( column_transformer, GaussianNB())
     cv_result_nb = cross_validate( pipe_nb, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'GaussianNB'] = pd.DataFrame( cv_result_nb).agg( [ 'mean', 'std']).T
 
     pipe_nb.fit( X, y) # As no hyperparameter optimization for Gaussian naive Bayes
 
-    pipe_nb.fit( X, y)
     dump( pipe_nb, 'binary_files/pipe_nb.joblib')
+    X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_nb, pr_curve_nb = pr_curve( pipe_nb, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')
     pr_df_nb.to_csv( f'{output_path}/threshold_nb.csv')
-    print( 'Gaussian Naive Bayes Classifier: Done')
 
-    # Logistic Regression ---
+    return cv_result_nb
 
+def logreg_cv( X, y, column_transformer, scoring_metrics, output_path):
     pipe_logreg = make_pipeline( column_transformer, LogisticRegression( max_iter = 1000, solver = 'saga', class_weight = 'balanced', random_state = 123))
     cv_result_logreg = cross_validate( pipe_logreg, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'LogReg'] = pd.DataFrame( cv_result_logreg).agg( [ 'mean', 'std']).T
 
     param_dist_logreg = {
         'logisticregression__C': [ 10**x for x in range( -2, 5)],
@@ -258,19 +234,19 @@ def main( data_path, output_path):
                                                                         class_weight = 'balanced', random_state = 123))
 
     cv_result_logreg_opt = cross_validate( pipe_logreg_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'LogReg_opt'] = pd.DataFrame( cv_result_logreg_opt).agg( [ 'mean', 'std']).T
 
     pipe_logreg_opt.fit( X, y)
     dump( pipe_logreg_opt, 'binary_files/pipe_logreg_opt.joblib')
+    X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_logreg, pr_curve_logreg = pr_curve( pipe_logreg_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_logreg, f'{output_path}/pr_curve_logreg.png')
     pr_df_logreg.to_csv( f'{output_path}/threshold_logreg.csv')
-    print( 'Logistic Regression Classifier: Done')
 
-    # Linear SVC
+    return cv_result_logreg, cv_result_logreg_opt
+
+def lsvc_cv( X, y, column_transformer, scoring_metrics, output_path):
     pipe_lsvc = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123))
     cv_result_lsvc = cross_validate( pipe_lsvc, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'LinearSVC'] = pd.DataFrame( cv_result_lsvc).agg( [ 'mean', 'std']).T
 
     param_dist = {
     'linearsvc__C': [ 10**x for x in range( -2, 5)]
@@ -280,20 +256,87 @@ def main( data_path, output_path):
         pipe_lsvc, param_dist, cv = 5, scoring = 'precision', n_jobs=-1, return_train_score = True
     )
 
-    grid_search_lsvc.fit( X_train, y_train)
+    grid_search_lsvc.fit( X, y)
     best_params_rfc = grid_search_lsvc.best_params_
 
     pipe_lsvc_opt = make_pipeline( column_transformer, LinearSVC( dual = False, random_state = 123,
                                 C = best_params_rfc[ 'linearsvc__C']))
     
     cv_result_lsvc_opt = cross_validate( pipe_lsvc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
-    cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std']).T
 
     pipe_lsvc_opt.fit( X, y)
     dump( pipe_lsvc_opt, 'binary_files/pipe_lsvc_opt.joblib')
+    X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_lsvc, pr_curve_lsvc = pr_curve( pipe_lsvc_opt, X_train, X_validation, y_train, y_validation)
     save_chart( pr_curve_lsvc, f'{output_path}/pr_curve_lsvc.png')
     pr_df_lsvc.to_csv( f'{output_path}/threshold_lsvc.csv')
+    return cv_result_lsvc, cv_result_lsvc_opt
+
+def main( data_path, output_path):
+    data_full = pd.read_csv( data_path)
+
+    numeric_features = [ 'Age', 'Number of sexual partners', 'First sexual intercourse',
+        'Num of pregnancies', 'Hormonal Contraceptives (years)', 'IUD (years)', 'STDs (number)']
+
+    binary_features = [ 'STDs:condylomatosis', 'Smokes', 'Dx:Cancer', 'Dx:CIN', 'Dx:HPV']
+
+    columns_tbc = numeric_features+binary_features
+
+    column_transformer = make_column_transformer(
+        ( make_pipeline( SimpleImputer( strategy = 'median'), StandardScaler()), numeric_features),
+        ( make_pipeline( SimpleImputer( strategy = 'constant', fill_value = 99), OneHotEncoder( handle_unknown = 'ignore')), binary_features)
+    )
+
+    X = data_full[ columns_tbc]
+    y = data_full[ 'risk']
+
+    # KNN ---
+
+    cv_result_dict = {}
+    scoring_metrics = [ 'precision', 'recall', 'f1']
+
+    cv_result_knn, cv_result_knn_opt = knn_cv( X, y, column_transformer, scoring_metrics)
+    cv_result_dict[ 'KNN'] = pd.DataFrame( cv_result_knn).agg( [ 'mean', 'std']).T
+    cv_result_dict[ 'KNN_opt'] = pd.DataFrame( cv_result_knn_opt).agg( [ 'mean', 'std']).T
+
+    print( 'KNN: Done')
+
+    # SVC ---
+
+    cv_result_svc, cv_result_svc_opt = svc_cv( X, y, column_transformer, scoring_metrics, output_path)
+    cv_result_dict[ 'SVC'] = pd.DataFrame( cv_result_svc).agg( [ 'mean', 'std']).T
+    cv_result_dict[ 'SVC_opt'] = pd.DataFrame( cv_result_svc_opt).agg( [ 'mean', 'std']).T
+
+    print( 'Support Vector Classifier: Done')
+
+    # RFC ---
+
+    cv_result_rfc, cv_result_rfc_opt = rfc_cv( X, y, column_transformer, scoring_metrics, output_path)
+    cv_result_dict[ 'RFC'] = pd.DataFrame( cv_result_rfc).agg( [ 'mean', 'std']).T
+    cv_result_dict[ 'RFC_opt'] = pd.DataFrame( cv_result_rfc_opt).agg( [ 'mean', 'std']).T
+
+    print( 'Random Forest Classifier: Done')
+
+    # Naive Bayes ---
+    
+    cv_result_nb = nb_cv( X, y, column_transformer, scoring_metrics, output_path)
+    cv_result_dict[ 'GaussianNB'] = pd.DataFrame( cv_result_nb).agg( [ 'mean', 'std']).T
+
+    print( 'Gaussian Naive Bayes Classifier: Done')
+
+    # Logistic Regression ---
+
+    cv_result_logreg, cv_result_logreg_opt = logreg_cv( X, y, column_transformer, scoring_metrics, output_path)
+    cv_result_dict[ 'LogReg'] = pd.DataFrame( cv_result_logreg).agg( [ 'mean', 'std']).T
+    cv_result_dict[ 'LogReg_opt'] = pd.DataFrame( cv_result_logreg_opt).agg( [ 'mean', 'std']).T
+
+    print( 'Logistic Regression Classifier: Done')
+
+    # Linear SVC
+    
+    cv_result_lsvc, cv_result_lsvc_opt = lsvc_cv( X, y, column_transformer, scoring_metrics, output_path)
+    cv_result_dict[ 'LinearSVC'] = pd.DataFrame( cv_result_lsvc).agg( [ 'mean', 'std']).T
+    cv_result_dict[ 'LinearSVC_opt'] = pd.DataFrame( cv_result_lsvc_opt).agg( [ 'mean', 'std']).T
     print( 'Linear Support Vector Classifier: Done')
     
     # Cross-validation results of all models
