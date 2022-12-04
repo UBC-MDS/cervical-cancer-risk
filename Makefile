@@ -3,6 +3,18 @@
 # Date: 2022-11-29
 # Makefile written by Revathy P, week of Nov 28th, 2022
 
+#Run this Make file using your CLI from the root of the project directory
+#Example Commands:
+
+#Run all scripts in sequence:
+# Make all
+
+#Delete all results:
+# Make clean
+
+#Run an individual script:
+#Use script names below. Assumes dependencies have already been run. 
+
 #all the major output files
 all :  data/raw/risk_factors_cervical_cancer.csv data/processed/train.csv results/binary_feat.png results/cv-results.csv results/pr_curve_logreg.png Analysis_Docs/Analysis.html
 
