@@ -26,7 +26,7 @@ results/pr_curve_logreg.png results/pr_curve_nb.png results/pr_curve_rfc.png res
 	python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'
 
 # render report
-Analysis_Docs/Analysis.html: Analysis_Docs/Analysis.Rmd Analysis_Docs/ref.bib results/binary_feat.png results/cv-results.csv results/pr_curve_logreg.png 
+Analysis_Docs/Analysis.html: Analysis_Docs/Analysis.Rmd Analysis_Docs/ref.bib results/binary_feat.png results/test-results.csv results/pr_curve_logreg.png 
 	Rscript -e "rmarkdown::render('Analysis_Docs/Analysis.Rmd')"
 
 
