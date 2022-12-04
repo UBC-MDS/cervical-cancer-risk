@@ -35,6 +35,16 @@ https://raw.githubusercontent.com/UBC-MDS/cervical-cancer-group7/main/src/Analys
 
 Please refer to the above flowchart for an overview of the analysis pipeline
 
+#### Make
+To run this analysis using Make, use the following commands from the root of the project directory.
+
+* To generate the entire project: `Make all`
+* To delete all results: `Make clean`
+* To run an individual script: `Make <script>`. See scripts in the script names below.
+
+
+#### Manually Run Scripts
+
 To run the data analysis on your local device, follow these steps. These scripts can be run in their current quoted form and will automatically generate the files on your device without manipulating the arguments.
 
 1. Clone this repository to your local device or download the source code.
