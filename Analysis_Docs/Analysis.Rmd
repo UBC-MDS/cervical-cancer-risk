@@ -1,7 +1,10 @@
 ---
 title: "Cervical Cancer Prediction Modelling Analysis"
+author: "Samson Bakos, Morris Chan, Revathy Ponnambalam, Waiel Tinwala (Master of Data Science, University of British Columbia)"
 output: 
   html_document:
+    toc: TRUE
+  github_document:
     toc: TRUE
 bibliography: ref.bib
 ---
