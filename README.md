@@ -69,4 +69,8 @@ Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 2. Bosch, F. X., et al. "Risk factors for cervical cancer in Colombia and Spain." International journal of cancer 52.5 (1992): 750-758.
 3. Castellsagué, Xavier. "Natural history and epidemiology of HPV infection and cervical cancer." Gynecologic oncology 110.3 (2008): S4-S7.
 4. Petignat, Patrick, and Michel Roy. "Diagnosis and management of cervical cancer." Bmj 335.7623 (2007): 765-768.
+5. McKinney, W. & others, 2010. Data structures for statistical computing in python. In Proceedings of the 9th Python in Science Conference. pp. 51–56.
+6. Pedregosa, F., Varoquaux, Ga"el, Gramfort, A., Michel, V., Thirion, B., Grisel, O., … others. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12(Oct), 2825–2830.
+7. Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686. 
+ 
 
