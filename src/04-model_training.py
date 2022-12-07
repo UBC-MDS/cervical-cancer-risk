@@ -6,7 +6,7 @@ The models will be exported in the directory where this script is found.
 Tables for cross-validation results will be created in the specified directory.
 
 Usage:
-model_training.py --data_path=<data_path> --output_path_cv=<output_path_cv>
+04-model_training.py --data_path=<data_path> --output_path_cv=<output_path_cv>
 
 Options:
 --data_path=<data_path>     Path to the data file (including the file name).
