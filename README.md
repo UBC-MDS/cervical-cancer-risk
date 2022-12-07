@@ -38,9 +38,15 @@ Please refer to the above flowchart for an overview of the analysis pipeline
 ### Make
 To run this analysis using Make, use the following commands from the root of the project directory.
 
-* To generate the entire project: `Make all`
-* To delete all results: `Make clean`
-* To run an individual script: `Make <script>`. See scripts in the 'Manually Run Scripts' section below.
+* To generate the entire project: 
+
+`Make all`
+* To delete all results: 
+
+`Make clean`
+* To run an individual script: 
+
+`Make <script>`. See scripts in the 'Manually Run Scripts' section below.
 
 
 ### Manually Run Scripts
@@ -48,12 +54,43 @@ To run this analysis using Make, use the following commands from the root of the
 To run the data analysis on your local device, follow these steps. These scripts can be run in their current quoted form and will automatically generate the files on your device without manipulating the arguments.
 
 1. Clone this repository to your local device or download the source code.
-2. Run the following script to download the data: `python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"` (input: the data url, output: raw dataset)
-3. Run the following script to clean and split the data: `python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"` (input: the raw data, output: cleaned and split data)
-3. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run `python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'` to generate the outputs (input: training set, output: literate EDA notebook, and/or EDA figures)
-4. Run the following script to train the models: `python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'` (input: training set, output: model objects saved as .joblib files)
-5. Run the following script to test the models and generate results: `python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'` (input: test set and traind models, output: final figures and tables).
-6. (Optional) To re-render the final report, run the following script  `Rscript -e "rmarkdown::render('Analysis_Docs/Analysis.Rmd')"` (input: results figures and tables, output: .html analysis)
+2. Run the following script to download the data: 
+
+`python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"` 
+ 
+(input: the data url, output: raw dataset)
+
+3. Run the following script to clean and split the data: 
+
+`python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"` 
+
+(input: the raw data, output: cleaned and split data)
+
+4. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run:
+
+`python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'` 
+
+(input: training set, output: literate EDA notebook, and/or EDA figures)
+
+5. Run the following script to train the models: 
+
+`python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'` 
+
+(input: training set, output: model objects saved as .joblib files)
+
+6. Run the following script to test the models and generate results: 
+
+`python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'` 
+
+(input: test set and traind models, output: final figures and tables).
+
+7. (Optional) To re-render the final report, run the following scripts:
+
+ `Rscript -e "install.packages('tidyverse'), repos='https://cran.rstudio.com/')"` (ensure Tidyverse is installed)
+ 
+ `Rscript -e "rmarkdown::render('Analysis_Docs/Analysis.Rmd')"` 
+ 
+ (input: results figures and tables, output: .html analysis)
 
 Raw final results can be found in the results subdirectory, and the final written report in the Analysis_Docs subdirectory. The final report can be rendered using the script above, the .html can be loaded in browser, or the .Rmd file can be rendered on RStudio as long as the files produced by the other scripts above have not been moved/ renamed. 
 
