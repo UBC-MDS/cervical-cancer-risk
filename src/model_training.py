@@ -129,7 +129,7 @@ def svc_cv( X, y, column_transformer, scoring_metrics, output_path):
     }
 
     random_search_svc = RandomizedSearchCV(
-        pipe_svc, param_dist_svc, n_iter = 30, cv = 5, scoring = 'recall', n_jobs=-1, return_train_score = True
+        pipe_svc, param_dist_svc, n_iter = 30, cv = 5, scoring = 'recall', random_state = 123, n_jobs=-1, return_train_score = True
     )
 
     random_search_svc.fit( X, y)
@@ -137,7 +137,8 @@ def svc_cv( X, y, column_transformer, scoring_metrics, output_path):
     best_params_svc = random_search_svc.best_params_
 
     pipe_svc_opt = make_pipeline( column_transformer, SVC( gamma = best_params_svc[ 'svc__gamma'], 
-                                                        C = best_params_svc[ 'svc__C'], class_weight = 'balanced'))
+                                                        C = best_params_svc[ 'svc__C'], class_weight = 'balanced',
+                                                        random_state = 123))
 
     cv_result_svc_opt = cross_validate( pipe_svc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
 
@@ -341,7 +342,7 @@ def main( data_path, output_path):
     
     # Cross-validation results of all models
 
-    all_cv_results = pd.concat( cv_result_dict, axis = 1)
+    all_cv_results = pd.concat( cv_result_dict, axis = 1).round( 3)
     
     all_cv_results.to_csv( f'{output_path}/cv-results.csv')
 

@@ -1,3 +1,6 @@
+# Author: Morris Chan
+# Date 2022-12-02
+
 """This script takes the trained models and returns the performance of them on the testing data set.
 
 Usage:
@@ -128,7 +131,7 @@ def main(data_path, output_path):
 
     # All models
 
-    all_test_results = pd.DataFrame(test_results)
+    all_test_results = pd.DataFrame(test_results).round( 3)
     try:
         all_test_results.to_csv(f"{output_path}/test-results.csv")
     except:
