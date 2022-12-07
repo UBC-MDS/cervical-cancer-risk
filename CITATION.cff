@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: Milestone Project - Cervical Cancer Prediction
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Samson
+    family-names: Bako
+  - given-names: Morris
+    family-names: Chan
+  - given-names: Revathy
+    family-names: Ponnambalam
+  - given-names: Waiel
+    family-names: Tinwala
+date-released: 2022-12-11
+url: https://github.com/UBC-MDS/cervical-cancer-predictor
