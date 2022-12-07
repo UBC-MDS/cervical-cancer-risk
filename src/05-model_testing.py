@@ -4,7 +4,7 @@
 """This script takes the trained models and returns the performance of them on the testing data set.
 
 Usage:
-model_testing.py --data_path=<data_path> --output_path=<output_path>
+05-model_testing.py --data_path=<data_path> --output_path=<output_path>
 
 Options:
 --data_path=<data_path>     Path to the data file (including the file name).
