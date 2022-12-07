@@ -5,6 +5,8 @@
 
 A Data Analysis/ Machine Learning project developed for DSCI 522 in the UBC Master of Data Science Program
 
+_Disclaimer: The current project is only for educational purposes. It shall not be used for actual diagnoses._
+
 ## Introduction
 
 Our primary research question is: can we diagnose or stratify risk for cervical cancer based on lifestyle factors, sexual history, and comorbidities using a machine learning model? This question is naturally subdivided into risk level and diagnosis questions depending on the relative strengths of the models that prove effective for this data. Classifiers with hard predictions (i.e. k-NN) are effective for diagnosis, while classifiers with probabilistic predictions (i.e. logistic regression) are effective for predicting level of risk depending on computed prediction probabilities.
