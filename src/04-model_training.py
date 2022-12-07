@@ -13,7 +13,7 @@ Options:
 --output_path_cv=<output_path_cv> Desired path for the performance results returned.
 
 Example:
-python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'
+python src/04-model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'
 '''
 
 from docopt import docopt
@@ -112,10 +112,10 @@ def knn_cv( X, y, column_transformer, scoring_metrics):
 
     pipe_knn_opt.fit( X, y)
     try:
-    	dump( pipe_knn_opt, 'binary_files/pipe_knn_opt.joblib')
+    	dump( pipe_knn_opt, 'binary_files/01-pipe_knn_opt.joblib')
     except:
     	os.makedirs(os.path.dirname('binary_files/'))
-    	dump( pipe_knn_opt, 'binary_files/pipe_knn_opt.joblib')
+    	dump( pipe_knn_opt, 'binary_files/01-pipe_knn_opt.joblib')
 
     return cv_result_knn, cv_result_knn_opt
 
@@ -143,12 +143,16 @@ def svc_cv( X, y, column_transformer, scoring_metrics, output_path):
     cv_result_svc_opt = cross_validate( pipe_svc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
 
     pipe_svc_opt.fit( X, y)
-    dump( pipe_svc_opt, 'binary_files/pipe_svc_opt.joblib')
+    dump( pipe_svc_opt, 'binary_files/02-pipe_svc_opt.joblib')
 
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_svc, pr_curve_svc = pr_curve( pipe_svc_opt, X_train, X_validation, y_train, y_validation)
-    save_chart( pr_curve_svc, f'{output_path}/pr_curve_svc.png')
-    pr_df_svc.to_csv( f'{output_path}/threshold_svc.csv')
+    try:
+        save_chart( pr_curve_svc, f'{output_path}/03-pr_curve_svc.png')
+    except:
+        os.makedirs(os.path.dirname('results/'))
+        save_chart( pr_curve_svc, f'{output_path}/03-pr_curve_svc.png')
+    pr_df_svc.to_csv( f'{output_path}/08-threshold_svc.csv')
 
     return cv_result_svc, cv_result_svc_opt
 
@@ -184,16 +188,12 @@ def rfc_cv( X, y, column_transformer, scoring_metrics, output_path):
     cv_result_rfc_opt = cross_validate( pipe_rfc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
 
     pipe_rfc_opt.fit( X, y)
-    dump( pipe_rfc_opt, 'binary_files/pipe_rfc_opt.joblib')
+    dump( pipe_rfc_opt, 'binary_files/03-pipe_rfc_opt.joblib')
 
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_rfc, pr_curve_svc = pr_curve( pipe_rfc_opt, X_train, X_validation, y_train, y_validation)
-    try:
-        save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
-    except:
-        os.makedirs(os.path.dirname('results/'))
-        save_chart( pr_curve_svc, f'{output_path}/pr_curve_rfc.png')
-    pr_df_rfc.to_csv( f'{output_path}/threshold_rfc.csv')
+    save_chart( pr_curve_svc, f'{output_path}/04-pr_curve_rfc.png')
+    pr_df_rfc.to_csv( f'{output_path}/09-threshold_rfc.csv')
 
     return cv_result_rfc, cv_result_rfc_opt
 
@@ -204,11 +204,11 @@ def nb_cv( X, y, column_transformer, scoring_metrics, output_path):
 
     pipe_nb.fit( X, y) # As no hyperparameter optimization for Gaussian naive Bayes
 
-    dump( pipe_nb, 'binary_files/pipe_nb.joblib')
+    dump( pipe_nb, 'binary_files/04-pipe_nb.joblib')
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_nb, pr_curve_nb = pr_curve( pipe_nb, X_train, X_validation, y_train, y_validation)
-    save_chart( pr_curve_nb, f'{output_path}/pr_curve_nb.png')
-    pr_df_nb.to_csv( f'{output_path}/threshold_nb.csv')
+    save_chart( pr_curve_nb, f'{output_path}/05-pr_curve_nb.png')
+    pr_df_nb.to_csv( f'{output_path}/10-threshold_nb.csv')
 
     return cv_result_nb
 
@@ -237,11 +237,11 @@ def logreg_cv( X, y, column_transformer, scoring_metrics, output_path):
     cv_result_logreg_opt = cross_validate( pipe_logreg_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
 
     pipe_logreg_opt.fit( X, y)
-    dump( pipe_logreg_opt, 'binary_files/pipe_logreg_opt.joblib')
+    dump( pipe_logreg_opt, 'binary_files/05-pipe_logreg_opt.joblib')
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_logreg, pr_curve_logreg = pr_curve( pipe_logreg_opt, X_train, X_validation, y_train, y_validation)
-    save_chart( pr_curve_logreg, f'{output_path}/pr_curve_logreg.png')
-    pr_df_logreg.to_csv( f'{output_path}/threshold_logreg.csv')
+    save_chart( pr_curve_logreg, f'{output_path}/06-pr_curve_logreg.png')
+    pr_df_logreg.to_csv( f'{output_path}/11-threshold_logreg.csv')
 
     return cv_result_logreg, cv_result_logreg_opt
 
@@ -266,11 +266,11 @@ def lsvc_cv( X, y, column_transformer, scoring_metrics, output_path):
     cv_result_lsvc_opt = cross_validate( pipe_lsvc_opt, X, y, cv = 5, return_train_score = True, scoring = scoring_metrics)
 
     pipe_lsvc_opt.fit( X, y)
-    dump( pipe_lsvc_opt, 'binary_files/pipe_lsvc_opt.joblib')
+    dump( pipe_lsvc_opt, 'binary_files/06-pipe_lsvc_opt.joblib')
     X_train, X_validation, y_train, y_validation = train_test_split( X, y, test_size = 0.5, stratify = y, random_state = 123)
     pr_df_lsvc, pr_curve_lsvc = pr_curve( pipe_lsvc_opt, X_train, X_validation, y_train, y_validation)
-    save_chart( pr_curve_lsvc, f'{output_path}/pr_curve_lsvc.png')
-    pr_df_lsvc.to_csv( f'{output_path}/threshold_lsvc.csv')
+    save_chart( pr_curve_lsvc, f'{output_path}/07-pr_curve_lsvc.png')
+    pr_df_lsvc.to_csv( f'{output_path}/12-threshold_lsvc.csv')
     return cv_result_lsvc, cv_result_lsvc_opt
 
 def main( data_path, output_path):
@@ -344,10 +344,10 @@ def main( data_path, output_path):
 
     all_cv_results = pd.concat( cv_result_dict, axis = 1).round( 3)
     
-    all_cv_results.to_csv( f'{output_path}/cv-results.csv')
+    all_cv_results.to_csv( f'{output_path}/01-cv-results.csv')
 
     all_cv_results_mean = all_cv_results.T.xs( 'mean', level = 1).T # Probably not the most elegant way to do that.
-    all_cv_results_mean.to_csv( f'{output_path}/mean-cv-results.csv')
+    all_cv_results_mean.to_csv( f'{output_path}/02-mean-cv-results.csv')
 
 if __name__ == "__main__":
   main(opt["--data_path"], opt["--output_path_cv"])
