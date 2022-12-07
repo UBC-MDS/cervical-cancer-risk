@@ -14,6 +14,7 @@ dependencies:
   - docopt
   - pip
   - pandoc>=1.12.3
+  - matplotlib
   - pip:
     - joblib==1.1.0
     - selenium==4.2.0
