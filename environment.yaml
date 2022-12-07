@@ -10,11 +10,12 @@ dependencies:
   - scikit-learn>=1.1.3
   - altair
   - altair_saver
+  - matplotlib
   - pandas<1.5
   - docopt
   - pip
   - pandoc>=1.12.3
-  - matplotlib
+  
   - pip:
     - joblib==1.1.0
     - selenium==4.2.0
