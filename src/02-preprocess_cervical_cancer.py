@@ -1,4 +1,4 @@
-# author: Cervical Cancer group 7
+# author: Revathy Ponnambalam and Waiel Tinwala
 # date: 2022-11-21
 """
 code adapted from Lecture 3 - "DSCI 522 Data Science Workflows"
