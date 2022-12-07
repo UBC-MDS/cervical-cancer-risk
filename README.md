@@ -56,31 +56,31 @@ To run the data analysis on your local device, follow these steps. These scripts
 1. Clone this repository to your local device or download the source code.
 2. Run the following script to download the data: 
 
-`python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"` 
+`python src/01-download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"` 
  
 (input: the data url, output: raw dataset)
 
 3. Run the following script to clean and split the data: 
 
-`python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"` 
+`python src/02-preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"` 
 
 (input: the raw data, output: cleaned and split data)
 
 4. (Optional) Execute the notebook `cervical_cancer_data_eda.ipynb` to view the EDA or run:
 
-`python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'` 
+`python src/03-eda_figures.py --train_data='data/processed/train.csv' --out_file='results'` 
 
 (input: training set, output: literate EDA notebook, and/or EDA figures)
 
 5. Run the following script to train the models: 
 
-`python src/model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'` 
+`python src/04-model_training.py --data_path='data/processed/train.csv' --output_path_cv='results'` 
 
 (input: training set, output: model objects saved as .joblib files)
 
 6. Run the following script to test the models and generate results: 
 
-`python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'` 
+`python src/05-model_testing.py --data_path='data/processed/test.csv' --output_path='results'` 
 
 (input: test set and traind models, output: final figures and tables).
 
