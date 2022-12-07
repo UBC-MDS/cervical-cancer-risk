@@ -52,11 +52,13 @@ Machine Learning models were then applied using Scikit-Learn (@scikit-learn). Th
 
 Models were assessed primarily on the criteria of maximum recall to minimize Type II Error, with a proposed working threshold of 0.28 precision (twice the sample positive rate), deliberately set quite low due to the dangers of false negatives in the diagnosis/ risk identification context.
 
+In the case of cancer diagnosis, we are far more concerned with failing to identify a positive case (Type II Error) than falsely identifying a negative case (Type I Error). Because cancer is a highly progressive disease, it is essential that it is caught early so that it can be mitigated, with the recovery rate of 80-95% highlighted by Petignat et al. (@petignat2007diagnosis) being only possible for early diagnoses. A false negative may lead to a woman not seeking treatment until symptoms manifest, at which point the disease may have progressed beyond treatability, or may require much more drastic intervention, resulting in increased harm and possibly death. A false positive may be worrying for the individual (though this can be mitigated by flagging as 'at risk' rather than a concrete diagnosis) and may strain health resources with the need for additional tests, this is far less harmful than failing to flag potentially identifiable cases.
+
 Test set results are presented in the results section below.
 
 ### Packing and Automation
 
-Packaging of this analysis was done using docopt scripts (@doc).
+Packaging of this analysis was done using docopt scripts (@doc). For ease of use, a Makefile is available for easy recreation of results (see ReadMe usage section). If preferred over usage of the project conda environment, a Dockerfile/ Docker Image is also available for reproduction on a local device.
 
 ## Results
 
