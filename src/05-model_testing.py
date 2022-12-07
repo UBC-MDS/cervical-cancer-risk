@@ -4,14 +4,14 @@
 """This script takes the trained models and returns the performance of them on the testing data set.
 
 Usage:
-model_testing.py --data_path=<data_path> --output_path=<output_path>
+05-model_testing.py --data_path=<data_path> --output_path=<output_path>
 
 Options:
 --data_path=<data_path>     Path to the data file (including the file name).
 --output_path=<output_path> Desired path for the perfornace results returned.
 
 Example:
-python src/model_testing.py --data_path='data/processed/test.csv' --output_path='results'
+python src/05-model_testing.py --data_path='data/processed/test.csv' --output_path='results'
 """
 
 from docopt import docopt
@@ -85,13 +85,13 @@ def main(data_path, output_path):
     test_results = {}
 
     # Thresholds ---
-    thresholds = pd.read_csv("src/thresholds-used.csv", index_col=0)
+    thresholds = pd.read_csv("src/06-thresholds-used.csv", index_col=0)
     thld_rfc = float(thresholds.loc["RFC"])
     thld_nb = float(thresholds.loc["NB"])
     thld_lsvc = float(thresholds.loc["LinearSVC"])
 
     # RFC ---
-    pipe_rfc_opt = load("binary_files/pipe_rfc_opt.joblib")
+    pipe_rfc_opt = load("binary_files/03-pipe_rfc_opt.joblib")
 
     def rfc_with_threshold(pipe_rfc, X_test, threshold):
         proba = pipe_rfc.predict_proba(X_test)[:, 1]
@@ -104,7 +104,7 @@ def main(data_path, output_path):
     print("Random Forest Classifier: Done.")
 
     # Naive Bayes ---
-    pipe_nb = load("binary_files/pipe_nb.joblib")
+    pipe_nb = load("binary_files/04-pipe_nb.joblib")
 
     def nb_with_threshold(pipe_nb, X_test, threshold):
         proba = pipe_nb.predict_proba(X_test)[:, 1]
@@ -117,7 +117,7 @@ def main(data_path, output_path):
     print("Gaussian Naive Bayes Classifier: Done.")
 
     # Linear SVC ---
-    pipe_lsvc_opt = load("binary_files/pipe_lsvc_opt.joblib")
+    pipe_lsvc_opt = load("binary_files/06-pipe_lsvc_opt.joblib")
 
     def lsvc_with_threshold(pipe_lsvc, X_test, threshold):
         proba = pipe_lsvc.decision_function(X_test)
@@ -133,10 +133,10 @@ def main(data_path, output_path):
 
     all_test_results = pd.DataFrame(test_results).round( 3)
     try:
-        all_test_results.to_csv(f"{output_path}/test-results.csv")
+        all_test_results.to_csv(f"{output_path}/13-test-results.csv")
     except:
         os.makedirs(os.path.dirname('results/'))
-        all_test_results.to_csv(f"{output_path}/test-results.csv")
+        all_test_results.to_csv(f"{output_path}/13-test-results.csv")
 
 if __name__ == "__main__":
     main(opt["--data_path"], opt["--output_path"])

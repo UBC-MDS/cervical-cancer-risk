@@ -4,11 +4,11 @@
 """Creates exploratory data analysis figures from the preprocessed training data of the cervical cancer (risk factors) dataset (from https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29)
 Saves the figures to the provided folder as .png files.
 
-Usage: src/eda_figures.py --train_data=<train_data> --out_file=<out_file>
+Usage: src/03-eda_figures.py --train_data=<train_data> --out_file=<out_file>
 
 Example:
 
-python src/eda_figures.py --train_data='data/processed/train.csv' --out_file='results'
+python src/03-eda_figures.py --train_data='data/processed/train.csv' --out_file='results'
 
 Options:
 --train_data=<train_data>   Path (including filename) of where the data is stored

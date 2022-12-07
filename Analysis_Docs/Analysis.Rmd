@@ -65,13 +65,13 @@ Results of this analysis are unfortunately disappointing, as no model seems to p
 PR Curves against the validation set are shown below:
 
 ```{r echo = FALSE, fig.cap = "Figures 2 and 3: PR Curves, Logistic Regression (Left) and Naive Bayes (Right)", fig.show = 'hold', out.width = '50%'}
-knitr::include_graphics("../results/pr_curve_logreg.png")
-knitr::include_graphics("../results/pr_curve_nb.png")
+knitr::include_graphics("../results/06-pr_curve_logreg.png")
+knitr::include_graphics("../results/05-pr_curve_nb.png")
 ```
 
 ```{r echo = FALSE, fig.cap = "Figures 4 and 5: PR Curves, Random Forest Classifier (Left) and Support Vector Classifier (Right)", fig.show = 'hold', out.width = '50%'}
-knitr::include_graphics("../results/pr_curve_rfc.png")
-knitr::include_graphics("../results/pr_curve_svc.png")
+knitr::include_graphics("../results/04-pr_curve_rfc.png")
+knitr::include_graphics("../results/03-pr_curve_svc.png")
 ```
 
 We can see from these plots that even the best performing models (i.e. Naive Bayes), capture less than 50% of true labels (women with a cervical cancer diagnosis) at only 28% precision. Missing 50% of cancer cases is not an acceptable margin of error in this context, especially considering the low precision threshold, where just under three in four women flagged by our model would be false positives.
@@ -79,7 +79,8 @@ We can see from these plots that even the best performing models (i.e. Naive Bay
 Also concerning is the highly steep nature of these plots, indicating that small changes in the threshold value can cause massive shifts in scoring. While some level of jaggedness/ steepness in PR curves is normal, these plots are much steeper than expected. This is likely caused by the small number of true data points in the validation set (where capture or non capture of a few points can dramatic change the scores). A lack of separation in the predicted probabilities of each class may also be a factor, where many true and false examples are grouped at similar prediction probabilities, indicating that these classes may be poorly separable (i.e. cannot be separated by a single hyperplane for logistic regression), or that their separation is poorly described by our features.
 
 ```{r echo = FALSE, message = FALSE}
-df <- read_csv("../results/test-results.csv")
+df <- read_csv("../results/13-test-results.csv")
+names( df) <- c( '', 'Random Forest Classifier', 'Gaussian Naive Bayes', 'Linear SVC')
 knitr::kable(df, caption = "Table 1. Test set scores (Precision, Recall, f1, AUC) for optimized models")
 ```
 

@@ -7,11 +7,11 @@ code adapted from Lecture 3 - "DSCI 522 Data Science Workflows"
 "Cleans, splits and pre-processes the Cervical Cancer data (from https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv).
 
 Writes the training and test data to separate csv files.
-Usage: src/preprocess_cervical_cancer.py --input_file=<input_file> --out_dir=<out_dir>
+Usage: src/02-preprocess_cervical_cancer.py --input_file=<input_file> --out_dir=<out_dir>
 
 Example script to run in terminal: 
 
-python src/preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"
+python src/02-preprocess_cervical_cancer.py --input_file="data/raw/risk_factors_cervical_cancer.csv" --out_dir="data/processed"
 
   
 Options:

@@ -4,7 +4,7 @@ source file: "https://github.ubc.ca/MDS-2022-23/DSCI_522_dsci-workflows_students
 
 Downloads csv data from the given input website to a local filepath as a csv.
 
-Usage: download_data_script.py --url=<url> --output_file=<output_file> 
+Usage: 01-download_data_script.py --url=<url> --output_file=<output_file> 
  
 Options:
 
@@ -13,7 +13,7 @@ Options:
 
 Example script to run in terminal: 
 
-python src/download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"
+python src/01-download_data_script.py --url="https://archive.ics.uci.edu/ml/machine-learning-databases/00383/risk_factors_cervical_cancer.csv" --output_file="data/raw/risk_factors_cervical_cancer.csv"
 
 """
 
