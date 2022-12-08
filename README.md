@@ -31,6 +31,10 @@ To create the environment, run the following command:
 
 `conda env create -f environment.yaml`
 
+To activate the environment, run the following command:
+
+`conda activate rfcc`
+
 PIPELINE FLOWCHART:
 
 https://raw.githubusercontent.com/UBC-MDS/cervical-cancer-group7/main/src/AnalysisPipeline.png
