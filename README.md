@@ -39,6 +39,8 @@ Clean up the analysis:
 
 `docker run --rm -v /$(pwd):/home samsonbakos/cervical-cancer-predictor make -C /home clean`
 
+<br><br>
+
 ### MAKE
 
 1.  Clone the repo, and navigate to the root of the project repo using your terminal.
