@@ -31,7 +31,7 @@ To run this analysis using Docker:
 1.  Clone the repo, and navigate to the root of the project repo using your terminal
 2.  Use the following commands
 
-Run the analysis:
+Run the analysis (Approximately 10 min):
 
 `docker run --rm -v /$(pwd):/home samsonbakos/cervical-cancer-predictor make -C /home all`
 
